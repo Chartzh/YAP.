@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+.pyo
+.venv/
+venv/
+.env
+.env.local
+.git/
+.gitignore
+*.md
+tests/
+.pytest_cache/
+*.log
+.DS_Store

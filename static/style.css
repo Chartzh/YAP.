@@ -1,0 +1,201 @@
+/* ==========================================================================
+   YAP! — Neo-Brutalism Theme Overrides
+   Global Page Bg: Volt Yellow #EBFF00
+   Card/Sidebar/Input Bg: White #FFFFFF
+   ========================================================================== */
+
+body {
+  background-color: #EBFF00; /* Global body background is Volt Yellow */
+  color: #000000;
+}
+
+/* --- Brutalist Borders & Shadows --- */
+.brutal-border {
+  border: 4px solid #000000 !important;
+}
+
+.brutal-border-b {
+  border-bottom: 4px solid #000000 !important;
+}
+
+.brutal-border-t {
+  border-top: 4px solid #000000 !important;
+}
+
+.brutal-border-r {
+  border-right: 4px solid #000000 !important;
+}
+
+.brutal-shadow {
+  box-shadow: 8px 8px 0px 0px #000000 !important;
+}
+
+.brutal-shadow-sm {
+  box-shadow: 4px 4px 0px 0px #000000 !important;
+}
+
+.brutal-shadow-hover:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 10px 10px 0px 0px #000000 !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.brutal-shadow-active:active {
+  transform: translate(4px, 4px) !important;
+  box-shadow: 4px 4px 0px 0px #000000 !important;
+}
+
+.brutal-inset-shadow {
+  box-shadow: inset 4px 4px 0px 0px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* --- Marquee Animation --- */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+}
+
+/* --- Range Slider Thumbs --- */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 32px;
+  width: 32px;
+  background: #00FF87; /* Slime Green */
+  border: 4px solid black;
+  cursor: pointer;
+  margin-top: -12px;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+  border-radius: 0px !important;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 12px;
+  cursor: pointer;
+  background: black;
+  border: 2px solid black;
+}
+
+/* --- Windows-98 Folder Tabs active state --- */
+.active-result-tab {
+  border-bottom: 4px solid transparent !important;
+  padding-bottom: 16px !important;
+  z-index: 10;
+}
+
+/* --- Combo Badges --- */
+.combo-badge-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 0.3rem 0.65rem;
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  background-color: #EBFF00;
+  color: #000000;
+  position: absolute;
+  right: 1rem;
+  top: 3.5rem;
+  z-index: 10;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  pointer-events: none;
+}
+
+.combo-badge-display.visible {
+  opacity: 1;
+  transform: scale(1);
+  animation: badge-shake-anim 0.35s ease forwards;
+}
+
+.combo-badge-display.max-yap {
+  background-color: #FF0055; /* Hot Pink */
+  color: #FFFFFF;
+  box-shadow: 4px 4px 0px #000000;
+  animation: badge-shake-anim 0.35s ease, badge-pulse-anim 1s ease infinite;
+}
+
+@keyframes badge-shake-anim {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  20% { transform: scale(1.1) rotate(-4deg); }
+  40% { transform: scale(1.1) rotate(4deg); }
+  60% { transform: scale(1.05) rotate(-2deg); }
+  80% { transform: scale(1.05) rotate(2deg); }
+}
+
+@keyframes badge-pulse-anim {
+  0%, 100% { box-shadow: 4px 4px 0px #000000; }
+  50% { box-shadow: 6px 6px 0px #0047FF; }
+}
+
+/* --- Blinking Console Cursor --- */
+.console-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background-color: #EBFF00;
+  vertical-align: text-bottom;
+  animation: cursor-blink 0.7s step-end infinite;
+  margin-left: 5px;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.console-log-row.done {
+  color: #00E5FF; /* Cyan when line runs fully */
+}
+
+.console-log-row.done::after {
+  content: ' [OK]';
+  color: #FF0055;
+}
+
+/* --- Active/Inactive view configurations --- */
+.state-view {
+  display: none;
+}
+.state-view.active {
+  display: block;
+}
+.dashboard-panel {
+  display: none;
+}
+.dashboard-panel.active {
+  display: flex;
+}
+.result-content-panel {
+  display: none;
+}
+.result-content-panel.active {
+  display: block;
+}
+.wizard-step-view {
+  display: none;
+}
+.wizard-step-view.active {
+  display: block;
+}
+
+/* --- Sticky error alert banner --- */
+.error-banner {
+  box-shadow: 0px 4px 0px #000000;
+  animation: banner-slide-down 0.25s ease forwards;
+}
+
+@keyframes banner-slide-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
