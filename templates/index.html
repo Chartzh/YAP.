@@ -424,7 +424,6 @@
                 <!-- Progress Bar / Wizard Row -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 mt-2">
                   <div class="flex items-center gap-4">
-                    <div class="font-label-md uppercase bg-primary-container px-3 py-1 brutal-border inline-block">Step 2 of ??</div>
                     <button id="btn-trigger-wizard" class="bg-[#00FF87] text-ink font-label-md uppercase py-2 px-4 brutal-border brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
                       <span class="material-symbols-outlined text-sm">help</span>
                       HELP! (CONFUSED WHAT TO YAP?)
@@ -437,6 +436,17 @@
                 </div>
 
                 <div class="flex flex-col gap-6 w-full mt-4">
+                  <!-- Project Name Input -->
+                  <div class="flex flex-col gap-3">
+                    <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
+                      PROJECT NAME
+                    </h2>
+                    <div class="relative">
+                      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl">folder</span>
+                      <input id="manual-project-name" class="w-full bg-surface border-4 border-ink p-4 pl-14 font-body-lg text-body-lg text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors" placeholder="ENTER PROJECT NAME (OR LEAVE BLANK FOR AI)..." type="text"/>
+                    </div>
+                  </div>
+
                   <!-- Question 1 -->
                   <div class="flex flex-col gap-3">
                     <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
@@ -528,69 +538,86 @@
           </div>
         </div>
 
-        <!-- ==========================================
-             STATE 4: GENERATION RESULT VIEW (Full Width)
-             ========================================== -->
-        <div id="state-result" class="w-full max-w-5xl mx-auto flex flex-col gap-gutter" style="display:none;">
-          <!-- Header and developer title title -->
-          <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
-            <div>
-              <h1 class="font-display-md-mobile md:font-display-md text-display-md-mobile md:text-display-md text-ink">GENERATION RESULT</h1>
-              <p class="font-body-md text-body-md mt-2 max-w-2xl text-ink/80">Review your AI-generated assets. Edit directly or export to your linked repositories.</p>
-            </div>
-            <div class="bg-surface brutal-border p-3 brutal-shadow-sm font-label-md text-label-md uppercase">
-              Profile: <span id="dev-title-display-text" class="text-electric-blue font-black">The Ghost Developer 👻</span>
-            </div>
           </div>
+        </div>
 
-          <!-- Tab System Container -->
-          <div class="relative w-full">
-            <!-- Tab Headers -->
-            <div class="flex gap-2 relative z-10 -mb-[4px] pl-4">
-              <!-- README Tab -->
-              <button id="btn-result-tab-readme" class="bg-secondary text-surface border-4 border-ink border-b-0 px-6 py-3 pb-4 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 transform translate-y-[4px] active-result-tab">
-                <span class="text-xl">🐙</span> GITHUB README.md
-              </button>
-              <!-- LinkedIn Tab -->
-              <button id="btn-result-tab-linkedin" class="bg-surface text-ink border-4 border-ink border-b-0 px-6 py-3 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 hover:bg-primary-container transition-colors shadow-[4px_0px_0px_0px_rgba(0,0,0,1)]">
-                <span class="text-xl">💼</span> LINKEDIN POST
-              </button>
-            </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       STATE 4: GENERATION RESULT VIEW (DEDICATED PAGE)
+       ========================================== -->
+  <div id="state-result" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden bg-primary-container" style="display:none;">
+    <!-- TopNavBar -->
+    <header class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+      <div class="flex items-center gap-4">
+        <div id="btn-logo-result" class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">YAP!</div>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="result-dev-title" class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">YAP COMPLETE! 🎉</span>
+      </div>
+    </header>
+
+    <div class="w-full min-h-[calc(100vh-100px)] p-margin-mobile md:p-gutter flex flex-col justify-start items-center">
+      <div class="w-full max-w-5xl mx-auto flex flex-col gap-gutter mt-4">
+        
+        <!-- Header title -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+          <div>
+            <h1 class="font-display-md-mobile md:font-display-md text-display-md-mobile md:text-display-md text-ink">GENERATION RESULT</h1>
+            <p class="font-body-md text-body-md mt-2 max-w-2xl text-ink/80">Review your AI-generated assets. Edit directly or export to your linked repositories.</p>
+          </div>
+        </div>
+
+        <!-- Tab System Container -->
+        <div class="relative w-full">
+          <!-- Tab Headers -->
+          <div class="flex gap-2 relative z-10 -mb-[4px] pl-4">
+            <!-- README Tab -->
+            <button id="btn-result-tab-readme" class="bg-secondary text-surface border-4 border-ink border-b-0 px-6 py-3 pb-4 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 transform translate-y-[4px] active-result-tab">
+              <span class="text-xl">🐙</span> GITHUB README.md
+            </button>
+            <!-- LinkedIn Tab -->
+            <button id="btn-result-tab-linkedin" class="bg-surface text-ink border-4 border-ink border-b-0 px-6 py-3 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 hover:bg-primary-container transition-colors shadow-[4px_0px_0px_0px_rgba(0,0,0,1)]">
+              <span class="text-xl">💼</span> LINKEDIN POST
+            </button>
+          </div>
+          
+          <!-- Main Content Panel -->
+          <div class="bg-surface border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-12 relative z-20">
             
-            <!-- Main Content Panel -->
-            <div class="bg-surface border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-12 relative z-20">
-              
-              <!-- Tab Panel Content README -->
-              <div id="result-panel-readme" class="result-content-panel active">
-                <div id="readme-preview-content" class="w-full flex flex-col gap-4 font-mono text-ink">
-                  <!-- Rendered dynamically by app.js -->
-                </div>
-                <textarea id="generated-readme-textarea" style="display:none;" readonly></textarea>
+            <!-- Tab Panel Content README -->
+            <div id="result-panel-readme" class="result-content-panel active">
+              <div id="readme-preview-content" class="w-full flex flex-col gap-4 font-mono text-ink">
+                <!-- Rendered dynamically by app.js -->
               </div>
+              <textarea id="generated-readme-textarea" style="display:none;" readonly></textarea>
+            </div>
 
-              <!-- Tab Panel Content LinkedIn -->
-              <div id="result-panel-linkedin" class="result-content-panel" style="display:none;">
-                <div id="linkedin-preview-content" class="w-full font-mono text-ink">
-                  <!-- Rendered dynamically by app.js -->
-                </div>
-                <textarea id="generated-linkedin-textarea" style="display:none;" readonly></textarea>
+            <!-- Tab Panel Content LinkedIn -->
+            <div id="result-panel-linkedin" class="result-content-panel" style="display:none;">
+              <div id="linkedin-preview-content" class="w-full font-mono text-ink">
+                <!-- Rendered dynamically by app.js -->
               </div>
+              <textarea id="generated-linkedin-textarea" style="display:none;" readonly></textarea>
+            </div>
 
-              <!-- Action Bar -->
-              <div class="flex flex-col sm:flex-row gap-4 mt-12 pt-8 border-t-4 border-ink border-dashed">
-                <button id="btn-copy-result" class="flex-1 bg-secondary text-surface font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-6 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
-                  <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_copy</span>
-                  COPY TO CLIPBOARD
-                </button>
-                <button id="btn-reset-generator" class="sm:w-auto bg-surface text-ink font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-8 hover:bg-primary-container hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
-                  <span class="material-symbols-outlined">refresh</span>
-                  RE-YAP
-                </button>
-                <span id="toast-copy-success" class="copy-success-toast self-center"></span>
-              </div>
+            <!-- Action Bar -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-12 pt-8 border-t-4 border-ink border-dashed">
+              <button id="btn-copy-result" class="flex-1 bg-secondary text-surface font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-6 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_copy</span>
+                COPY TO CLIPBOARD
+              </button>
+              <button id="btn-reset-generator" class="sm:w-auto bg-surface text-ink font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-8 hover:bg-primary-container hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
+                <span class="material-symbols-outlined">refresh</span>
+                RE-YAP
+              </button>
+              <span id="toast-copy-success" class="copy-success-toast self-center"></span>
             </div>
           </div>
         </div>
+      </div>
 
       </div>
     </div>
@@ -631,7 +658,7 @@
           </div>
 
           <!-- Question Text -->
-          <h1 id="wizard-step-question" class="font-display-md-mobile text-display-md-mobile md:font-display-md md:text-display-md uppercase text-ink leading-tight tracking-tight">
+          <h1 id="wizard-step-question" class="font-bold text-2xl md:text-3xl font-body-lg text-ink leading-tight tracking-tight">
             What cursed thing did you actually build?
           </h1>
 
@@ -642,20 +669,30 @@
         </div>
 
         <!-- Dramatic Terminal Node view (hidden by default) -->
-        <div id="wizard-terminal-view" class="hidden flex-col items-center text-center gap-8 py-8">
-          <div class="w-24 h-24 bg-success border-4 border-ink flex items-center justify-center rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-bounce">
-            <span class="material-symbols-outlined text-6xl text-ink">check_circle</span>
+        <div id="wizard-terminal-view" class="hidden flex-col items-center text-center gap-6 py-6">
+          <div class="w-20 h-20 bg-success border-4 border-ink flex items-center justify-center rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-bounce">
+            <span class="material-symbols-outlined text-5xl text-ink">check_circle</span>
           </div>
-          <h2 class="font-display-md text-display-md uppercase text-ink tracking-tighter" id="wizard-terminal-title">THE BACKEND BEAST 🔌</h2>
-          <p class="font-body-lg text-body-lg max-w-2xl font-bold text-ink" id="wizard-terminal-message">
+          <h2 class="font-bold text-2xl md:text-3xl text-ink uppercase" id="wizard-terminal-title">THE BACKEND BEAST 🔌</h2>
+          <p class="font-body-md text-body-md max-w-2xl text-ink/80" id="wizard-terminal-message">
             Backend fully interrogated...
           </p>
-          <div class="w-full max-w-md bg-black brutal-border p-6 mt-4 mx-auto">
-            <div class="text-[#EBFF00] font-mono text-sm mb-2 text-left animate-pulse">&gt; INITIATING GEMINI COMPILATION...</div>
-            <div class="h-4 brutal-border border-[#EBFF00] bg-black overflow-hidden">
-              <div class="h-full bg-hot-pink animate-pulse" style="width: 100%"></div>
+
+          <!-- Project Naming input row -->
+          <div class="w-full max-w-lg mt-4 flex flex-col gap-4 border-4 border-ink p-6 bg-background brutal-shadow-sm text-left">
+            <label class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm self-start">Project Name</label>
+            <div class="flex flex-col sm:flex-row gap-4 items-stretch">
+              <input id="wizard-project-name" class="flex-1 bg-surface border-4 border-ink p-3 font-body-md text-body-md text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors" placeholder="ENTER PROJECT NAME..." type="text"/>
+              <button id="btn-wizard-surrender-name" class="bg-surface-variant text-ink font-label-md uppercase border-4 border-ink px-4 py-2 hover:bg-surface-dim transition-colors brutal-shadow-sm active:translate-x-[2px] active:translate-y-[2px]">
+                🎲 SURRENDER TO AI
+              </button>
             </div>
           </div>
+
+          <!-- Main Submit Button -->
+          <button id="btn-wizard-submit-generate" class="w-full max-w-lg bg-electric-blue text-white font-headline-lg py-5 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all mt-4 text-center flex justify-center items-center group">
+            GENERATE MY README & POST 🚀
+          </button>
         </div>
 
       </div>

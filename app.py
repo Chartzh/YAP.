@@ -361,7 +361,7 @@ def api_generate():
     code_content = (data.get("code_content") or "").strip()
     questionnaire = data.get("questionnaire") or {}
     vibe = (data.get("vibe") or "humblebrag").strip().lower()
-    repo_name = (data.get("repo_name") or "").strip()
+    repo_name = (data.get("repo_name") or data.get("project_name") or "").strip()
 
     # Validate vibe
     if vibe not in VIBE_DESCRIPTIONS:

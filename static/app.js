@@ -5,7 +5,7 @@
  *   STATE_DASHBOARD -> State 1: Input dashboard (GitHub vs Manual)
  *   STATE_WIZARD    -> State 2: Dedicated Akinator Questionnaire Page
  *   STATE_LOADING  -> State 3: Monospaced arcade typewriter terminal logs
- *   STATE_RESULT   -> State 4: Detailed output tabs
+ *   STATE_RESULT   -> State 4: Standalone Output Tabs Page
  */
 
 const STATE = {
@@ -80,6 +80,9 @@ function transitionTo(newState) {
   } else if (newState === STATE.WIZARD) {
     $('state-wizard').style.display = 'block';
     $('state-wizard').classList.add('active');
+  } else if (newState === STATE.RESULT) {
+    $('state-result').style.display = 'block';
+    $('state-result').classList.add('active');
   } else {
     // Show permanent dashboard shell
     if (dashboardWrapper) dashboardWrapper.style.display = 'block';
@@ -299,7 +302,7 @@ function renderStep(stepId) {
   const options = stepData.options || [];
   options.forEach((option, idx) => {
     const btn = document.createElement('button');
-    btn.className = 'wizard-option-btn-neo w-full text-left p-6 md:p-8 font-headline-lg flex justify-between items-center transition-all group';
+    btn.className = 'wizard-option-btn-neo w-full text-left p-4 md:p-6 font-body-md text-base md:text-lg font-semibold flex justify-between items-center transition-all group';
     
     const colors = getOptionColors(idx, option.label);
     btn.style.backgroundColor = colors.bg;
@@ -381,7 +384,7 @@ function buildQuestionnairePayload(payload) {
   };
 }
 
-async function handleTerminalNode(stepData) {
+function handleTerminalNode(stepData) {
   // Update header dev badges
   const devTitle = stepData.developer_title || "THE CHOSEN ONE 🔮";
   if ($('header-dev-title')) $('header-dev-title').textContent = devTitle;
@@ -399,9 +402,45 @@ async function handleTerminalNode(stepData) {
   $('wizard-terminal-title').textContent = devTitle;
   $('wizard-terminal-message').textContent = stepData.message || '';
 
-  // Wait 2.5 seconds for dramatic feedback
-  await sleep(2500);
+  // Naming controls binding
+  const nameInput = $('wizard-project-name');
+  nameInput.value = '';
+  nameInput.readOnly = false;
+  nameInput.classList.remove('bg-surface-dim');
 
+  // Bind surrender button
+  const surrenderBtn = $('btn-wizard-surrender-name');
+  const newSurrenderBtn = surrenderBtn.cloneNode(true);
+  surrenderBtn.parentNode.replaceChild(newSurrenderBtn, surrenderBtn);
+  newSurrenderBtn.addEventListener('click', () => {
+    nameInput.value = "AI_GENERATE_NAME";
+    nameInput.classList.add('bg-surface-dim');
+    nameInput.readOnly = true;
+  });
+
+  // Bind focus unlock
+  nameInput.addEventListener('focus', () => {
+    if (nameInput.readOnly && nameInput.value === "AI_GENERATE_NAME") {
+      nameInput.value = "";
+      nameInput.readOnly = false;
+      nameInput.classList.remove('bg-surface-dim');
+    }
+  });
+
+  // Bind submit button
+  const submitBtn = $('btn-wizard-submit-generate');
+  const newSubmitBtn = submitBtn.cloneNode(true);
+  submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+  newSubmitBtn.addEventListener('click', () => {
+    let projName = nameInput.value.trim();
+    if (!projName) {
+      projName = "AI_GENERATE_NAME";
+    }
+    triggerWizardGeneration(projName);
+  });
+}
+
+async function triggerWizardGeneration(projName) {
   // Transition to dynamic log state
   transitionTo(STATE.LOADING);
   const animPromise = runConsoleLoadingSequence();
@@ -413,7 +452,8 @@ async function handleTerminalNode(stepData) {
     code_content: "", // Built entirely via Akinator wizard
     questionnaire: questionnairePayload,
     vibe: appState.selectedVibe,
-    repo_name: ""
+    repo_name: projName === "AI_GENERATE_NAME" ? "" : projName,
+    project_name: projName
   };
 
   try {
@@ -500,6 +540,11 @@ function sleep(ms) {
 
 // --- STATE 4: OUTPUT DISPLAY & COPY ACTIONS ---
 function initResults() {
+  // Brand logo click
+  $('btn-logo-result').addEventListener('click', () => {
+    transitionTo(STATE.LANDING);
+  });
+
   // Folder tabs click
   $('btn-result-tab-readme').addEventListener('click', () => switchOutputTab('readme'));
   $('btn-result-tab-linkedin').addEventListener('click', () => switchOutputTab('linkedin'));
@@ -532,20 +577,40 @@ function switchOutputTab(tabType) {
 
 async function handleCopyResultAction() {
   const isReadme = appState.output.currentActiveTab === 'readme';
-  const textareaId = isReadme ? 'generated-readme-textarea' : 'generated-linkedin-textarea';
-  const text = $(textareaId).value;
-  const toast = $('toast-copy-success');
-  if (!text) return;
+  const text = isReadme ? appState.output.readme_md : appState.output.linkedin_post;
+  if (!text) {
+    console.warn("No text to copy");
+    return;
+  }
 
+  const toast = $('toast-copy-success');
+  
+  // 1. Try modern clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      showCopyToast(toast);
+      return;
+    } catch (err) {
+      console.error("Clipboard API failed, using fallback:", err);
+    }
+  }
+  
+  // 2. Fallback: Create a temporary textarea off-screen, copy, and remove
+  const tempEl = document.createElement('textarea');
+  tempEl.value = text;
+  tempEl.style.position = 'absolute';
+  tempEl.style.left = '-9999px';
+  document.body.appendChild(tempEl);
+  tempEl.select();
   try {
-    await navigator.clipboard.writeText(text);
-    showCopyToast(toast);
-  } catch (err) {
-    // Fallback
-    $(textareaId).select();
     document.execCommand('copy');
     showCopyToast(toast);
+  } catch (err) {
+    console.error("Fallback copy failed:", err);
+    showError("Could not copy text automatically. Please select and copy manually.");
   }
+  document.body.removeChild(tempEl);
 }
 
 function showCopyToast(toastElement) {
@@ -672,17 +737,14 @@ function renderLinkedInHTML(text) {
 }
 
 function populateResults(readme, linkedin) {
-  $('generated-readme-textarea').value = readme;
-  $('generated-linkedin-textarea').value = linkedin;
+  appState.output.readme_md = readme;
+  appState.output.linkedin_post = linkedin;
 
   $('readme-preview-content').innerHTML = renderReadmeHTML(readme);
   $('linkedin-preview-content').innerHTML = renderLinkedInHTML(linkedin);
 
-  // Set Dev Profile banner
-  const title = determineDeveloperTitle();
-  if ($('dev-title-display-text')) $('dev-title-display-text').textContent = title;
-  
   // Only change topbar badge if it wasn't already set by the Akinator wizard
+  const title = determineDeveloperTitle();
   if ($('header-dev-title') && $('header-dev-title').textContent.includes("YAPPING: IDLE")) {
     $('header-dev-title').textContent = title;
   }
@@ -700,6 +762,7 @@ function handleResetGenerator() {
   $('manual-core-logic').value = '';
   $('manual-frameworks').value = '';
   $('manual-challenge').value = '';
+  $('manual-project-name').value = '';
   
   appState.wizard = { category: '', categoryLabel: '', experimentalDetail: '' };
   appState.maxYapTriggered = false;
@@ -752,10 +815,14 @@ async function handleTransformSubmission() {
     await animPromise;
 
   } else {
-    // Manual inputs: read from the three textareas
+    // Manual inputs: read from the three textareas and project name input
     const coreLogic = $('manual-core-logic').value.trim();
     const frameworks = $('manual-frameworks').value.trim();
     const challenge = $('manual-challenge').value.trim();
+    const projNameInput = $('manual-project-name').value.trim();
+
+    // Use project name input as repoName / project name parameter
+    repoName = projNameInput;
 
     if (!coreLogic && !frameworks && !challenge) {
       showError("Please describe your project, frameworks, or challenge to transform.");
@@ -781,7 +848,8 @@ async function handleTransformSubmission() {
       tech_stack: appState.currentMode === INPUT_MODE.GITHUB ? 'GitHub Repository' : ($('manual-frameworks').value.trim() || 'Vanilla')
     },
     vibe: appState.selectedVibe,
-    repo_name: repoName
+    repo_name: repoName,
+    project_name: repoName
   };
 
   try {
