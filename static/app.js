@@ -1,8 +1,9 @@
 /**
- * YAP! — SPA State Machine (Revised Design)
+ * YAP! — SPA State Machine (Akinator Edition)
  * States:
  *   STATE_LANDING  -> State 0: Landing page
  *   STATE_DASHBOARD -> State 1: Input dashboard (GitHub vs Manual)
+ *   STATE_WIZARD    -> State 2: Dedicated Akinator Questionnaire Page
  *   STATE_LOADING  -> State 3: Monospaced arcade typewriter terminal logs
  *   STATE_RESULT   -> State 4: Detailed output tabs
  */
@@ -10,6 +11,7 @@
 const STATE = {
   LANDING: 'landing',
   DASHBOARD: 'dashboard',
+  WIZARD: 'wizard',
   LOADING: 'loading',
   RESULT: 'result'
 };
@@ -25,9 +27,9 @@ const appState = {
   selectedVibe: 'corporate-alpha', // Default is Professional
   maxYapTriggered: false,
 
-  // Wizard data
+  // Manual wizard defaults (if any)
   wizard: {
-    category: '',         // A, B, C, D
+    category: '',
     categoryLabel: '',
     experimentalDetail: ''
   },
@@ -45,30 +47,55 @@ const appState = {
 const $ = (id) => document.getElementById(id);
 const $$ = (sel) => document.querySelectorAll(sel);
 
+// Global state variables for the Akinator state machine
+let wizardData = null;
+let collectedPayload = {};
+let currentStepId = 'S1';
+let stepHistory = []; // Array of { stepId, payload } for undo functionality
+
 // Global Transition Engine
 function transitionTo(newState) {
   // Hide all state views
   $$('.state-view').forEach(el => el.style.display = 'none');
-  $('dashboard-wrapper').style.display = 'none';
-  $('state-dashboard').classList.remove('active');
-  $('state-loading').classList.remove('active');
-  $('state-result').classList.remove('active');
+  
+  const dashboardWrapper = $('dashboard-wrapper');
+  if (dashboardWrapper) dashboardWrapper.style.display = 'none';
+
+  const stateDashboard = $('state-dashboard');
+  if (stateDashboard) stateDashboard.classList.remove('active');
+
+  const stateLoading = $('state-loading');
+  if (stateLoading) stateLoading.classList.remove('active');
+
+  const stateResult = $('state-result');
+  if (stateResult) stateResult.classList.remove('active');
+
+  const stateWizard = $('state-wizard');
+  if (stateWizard) stateWizard.classList.remove('active');
 
   appState.currentState = newState;
 
   if (newState === STATE.LANDING) {
     $('state-landing').style.display = 'block';
+  } else if (newState === STATE.WIZARD) {
+    $('state-wizard').style.display = 'block';
+    $('state-wizard').classList.add('active');
   } else {
     // Show permanent dashboard shell
-    $('dashboard-wrapper').style.display = 'block';
+    if (dashboardWrapper) dashboardWrapper.style.display = 'block';
     
     // Show requested view
     if (newState === STATE.DASHBOARD) {
-      $('state-dashboard').classList.add('active');
-      $('state-dashboard').style.display = 'flex';
+      if (stateDashboard) {
+        stateDashboard.classList.add('active');
+        stateDashboard.style.display = 'flex';
+      }
     } else {
-      $(`state-${newState}`).classList.add('active');
-      $(`state-${newState}`).style.display = 'block';
+      const targetView = $(`state-${newState}`);
+      if (targetView) {
+        targetView.classList.add('active');
+        targetView.style.display = 'block';
+      }
     }
   }
 
@@ -160,106 +187,260 @@ function switchInputMode(mode) {
   }
 }
 
-// --- STATE 2: DIAGNOSTIC WIZARD (OVERLAY MODAL) ---
+// --- STATE 2: DYNAMIC AKINATOR WIZARD PAGE ---
+async function fetchWizardData() {
+  try {
+    const response = await fetch('/static/yap_wizard_v2.json');
+    if (!response.ok) throw new Error("Failed to load wizard scheme.");
+    wizardData = await response.json();
+    console.log("Wizard schema fetched successfully.");
+  } catch (error) {
+    console.error("Error loading wizard schema:", error);
+    showError("Could not fetch Akinator Wizard structure. Make sure yap_wizard_v2.json is in static/.");
+  }
+}
+
 function initWizard() {
   $('btn-trigger-wizard').addEventListener('click', openWizard);
-  $('btn-wizard-close').addEventListener('click', closeWizard);
-  $('btn-wizard-prev').addEventListener('click', navigateWizardBack);
-
-  // Modal Step 1 Option Buttons
-  $$('.wizard-option-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val = btn.dataset.value;
-      const label = btn.dataset.label;
-
-      appState.wizard.category = val;
-      appState.wizard.categoryLabel = label;
-
-      if (val === 'D') {
-        // Switch to Step 2 (Branch option)
-        $('wizard-card-step1').classList.remove('active');
-        $('wizard-card-step2').classList.add('active');
-        $('btn-wizard-prev').style.display = 'inline-flex';
-      } else {
-        // Update manual textareas with predefined templates
-        updateTextareasForWizardCategory(val);
-        updateWizardSummaryCard();
-        closeWizard();
-      }
-    });
+  $('btn-wizard-back').addEventListener('click', navigateWizardBack);
+  $('btn-wizard-exit').addEventListener('click', () => {
+    transitionTo(STATE.DASHBOARD);
   });
-
-  // Modal Step 2 Branch Option Buttons
-  $$('.wizard-branch-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const val = btn.dataset.value;
-      const label = btn.dataset.label;
-
-      appState.wizard.experimentalDetail = label;
-      
-      // Update manual textareas based on branch selection
-      updateTextareasForWizardBranch(val);
-      updateWizardSummaryCard();
-      closeWizard();
-    });
+  $('btn-logo-wizard').addEventListener('click', () => {
+    transitionTo(STATE.LANDING);
   });
 }
 
 function openWizard() {
-  $('state-wizard-overlay').style.display = 'flex';
-  $('wizard-card-step1').classList.add('active');
-  $('wizard-card-step2').classList.remove('active');
-  $('btn-wizard-prev').style.display = 'none';
-}
+  if (!wizardData) {
+    showError("Wizard database is not loaded yet. Please wait.");
+    return;
+  }
+  
+  collectedPayload = {};
+  currentStepId = 'S1';
+  stepHistory = [];
 
-function closeWizard() {
-  $('state-wizard-overlay').style.display = 'none';
+  $('wizard-question-view').style.display = 'flex';
+  $('wizard-terminal-view').style.display = 'none';
+  $('wizard-terminal-view').classList.remove('flex');
+  $('wizard-terminal-view').classList.add('hidden');
+
+  renderStep('S1');
+  transitionTo(STATE.WIZARD);
 }
 
 function navigateWizardBack() {
-  $('wizard-card-step2').classList.remove('active');
-  $('wizard-card-step1').classList.add('active');
-  $('btn-wizard-prev').style.display = 'none';
-}
-
-function updateWizardSummaryCard() {
-  $('wizard-summary-card').style.display = 'block';
-  if (appState.wizard.category === 'D') {
-    $('wizard-summary-text').textContent = `${appState.wizard.categoryLabel} (${appState.wizard.experimentalDetail})`;
-  } else {
-    $('wizard-summary-text').textContent = appState.wizard.categoryLabel;
+  if (stepHistory.length > 0) {
+    const prev = stepHistory.pop();
+    currentStepId = prev.stepId;
+    collectedPayload = prev.payload;
+    renderStep(currentStepId);
   }
 }
 
-function updateTextareasForWizardCategory(cat) {
-  if (cat === 'A') {
-    $('manual-core-logic').value = "I wanted to build a simple but robust backend using Flask that can handle requests efficiently. The core idea is to process data and output clean assets.";
-    $('manual-frameworks').value = "Flask / Python, requests library for fetching data.";
-    $('manual-challenge').value = "Figuring out how to structure the routes and parse JSON payloads clean without complex setups.";
-  } else if (cat === 'B') {
-    $('manual-core-logic').value = "The project grew organically with a lot of helper scripts. The main script coordinates multiple modules, scraping content asynchronously and stitching it back together.";
-    $('manual-frameworks').value = "FastAPI, aiohttp, SQLite3 for storing the raw extracted nodes.";
-    $('manual-challenge').value = "Handling database concurrency when multiple scraping coroutines write to SQLite at the same time.";
-  } else if (cat === 'C') {
-    $('manual-core-logic').value = "A utility tool designed to solve a specific workflow issue. Focuses on speed and minimal dependencies.";
-    $('manual-frameworks').value = "Node.js, Express, Tailwind CSS.";
-    $('manual-challenge').value = "Optimizing the static asset delivery and setting up clean routes.";
+function getOptionColors(index, label) {
+  const labelLower = label.toLowerCase();
+  
+  // Specific color tokens from Stitch config
+  const tokens = {
+    'electric blue': { bg: '#0047FF', text: '#FFFFFF' },
+    'slime green': { bg: '#00FF87', text: '#000000' },
+    'neon coral': { bg: '#FF3D00', text: '#FFFFFF' },
+    'acid yellow': { bg: '#EBFF00', text: '#000000' },
+    'volt yellow': { bg: '#EBFF00', text: '#000000' },
+    'warm grey': { bg: '#D4D0C4', text: '#000000' },
+    'hot pink': { bg: '#FF0055', text: '#FFFFFF' }
+  };
+  
+  // Check text content matches
+  for (const tokenName in tokens) {
+    if (labelLower.includes(tokenName)) {
+      return tokens[tokenName];
+    }
+  }
+  
+  // Fallback to cycling sequence
+  const cycle = [
+    tokens['electric blue'],
+    tokens['slime green'],
+    tokens['neon coral'],
+    tokens['acid yellow'],
+    tokens['warm grey']
+  ];
+  return cycle[index % cycle.length];
+}
+
+function renderStep(stepId) {
+  if (!wizardData || !wizardData.steps) return;
+
+  const stepData = wizardData.steps[stepId];
+  if (!stepData) {
+    console.error(`Step index ${stepId} missing.`);
+    return;
+  }
+
+  currentStepId = stepId;
+
+  // Handle Terminal Node (END)
+  if (stepData.type === 'terminal') {
+    handleTerminalNode(stepData);
+    return;
+  }
+
+  // Populate Question UI elements
+  $('wizard-step-phase').textContent = stepData.phase || 'DIAGNOSTIC';
+  $('wizard-step-question').textContent = stepData.question || '';
+
+  // Options rendering
+  const container = $('wizard-options-container');
+  container.innerHTML = '';
+
+  const options = stepData.options || [];
+  options.forEach((option, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'wizard-option-btn-neo w-full text-left p-6 md:p-8 font-headline-lg flex justify-between items-center transition-all group';
+    
+    const colors = getOptionColors(idx, option.label);
+    btn.style.backgroundColor = colors.bg;
+    btn.style.color = colors.text;
+
+    btn.innerHTML = `
+      <span>${option.label}</span>
+      <span class="material-symbols-outlined text-4xl opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-2">arrow_forward</span>
+    `;
+
+    btn.addEventListener('click', () => {
+      // Save history snap
+      stepHistory.push({
+        stepId: currentStepId,
+        payload: JSON.parse(JSON.stringify(collectedPayload))
+      });
+
+      // Merge collects attributes
+      Object.assign(collectedPayload, option.collects || {});
+
+      // Move next
+      renderStep(option.next);
+    });
+
+    container.appendChild(btn);
+  });
+
+  // Undo button display state
+  const undoBtn = $('btn-wizard-back');
+  if (stepHistory.length > 0) {
+    undoBtn.style.display = 'inline-flex';
+  } else {
+    undoBtn.style.display = 'none';
   }
 }
 
-function updateTextareasForWizardBranch(branch) {
-  if (branch === 'bug') {
-    $('manual-core-logic').value = "The main processing logic failed during edge case inputs containing weird encodings or missing keys.";
-    $('manual-frameworks').value = "GCP / Cloud Run / Docker containerization.";
-    $('manual-challenge').value = "Debugging parsing errors in production environment where logs were truncated.";
-  } else if (branch === 'vibe') {
-    $('manual-core-logic').value = "We built a fun, chaotic frontend to experiment with Neo-Brutalist design principles.";
-    $('manual-frameworks').value = "Vanilla HTML / CSS / JS, Tailwind CSS CDN.";
-    $('manual-challenge').value = "Keeping the styling clean and responsive without sacrificing the heavy borders and shadows.";
-  } else {
-    $('manual-core-logic').value = "Just testing the capabilities of this generator and seeing how well it handles different vibes.";
-    $('manual-frameworks').value = "Vanilla HTML / CSS / JS sandbox.";
-    $('manual-challenge').value = "Trying to understand all the different configurations and how they affect the output.";
+function buildQuestionnairePayload(payload) {
+  const category = payload.category || "Web Application";
+  const problem = payload.problem || "No problem described";
+  
+  // Tech stack: compile all other values in collects
+  const techStackKeys = [
+    'frontend_framework', 'backend', 'database', 'orm', 'deployment',
+    'language', 'framework', 'auth_strategy', 'auth_type', 'db_type',
+    'model_deployment', 'vector_db', 'model_type', 'data_volume', 'infra_serving',
+    'prediction_storage', 'performance_optimization', 'api_reactivity',
+    'statement_layer', 'power_management', 'data_retention', 'ota_updates'
+  ];
+  
+  const techParts = [];
+  techStackKeys.forEach(k => {
+    if (payload[k] !== undefined && payload[k] !== null && payload[k] !== '') {
+      techParts.push(payload[k]);
+    }
+  });
+  
+  // Collect other unlisted keys
+  const nonTechKeys = ['category', 'problem', 'experimental_detail', 'problem_context', 'core_mechanic', 'project_type'];
+  for (const key in payload) {
+    if (!nonTechKeys.includes(key) && !techStackKeys.includes(key) && payload[key] !== undefined && payload[key] !== null && payload[key] !== '') {
+      if (typeof payload[key] === 'boolean') {
+        if (payload[key]) {
+          techParts.push(key.replace(/_/g, ' '));
+        }
+      } else {
+        techParts.push(payload[key]);
+      }
+    }
+  }
+  
+  const tech_stack = techParts.join(', ') || 'Vanilla JS';
+  const experimental_detail = payload.experimental_detail || payload.core_mechanic || payload.problem_context || "";
+
+  return {
+    category,
+    problem,
+    tech_stack,
+    experimental_detail
+  };
+}
+
+async function handleTerminalNode(stepData) {
+  // Update header dev badges
+  const devTitle = stepData.developer_title || "THE CHOSEN ONE 🔮";
+  if ($('header-dev-title')) $('header-dev-title').textContent = devTitle;
+  if ($('dev-title-display-text')) $('dev-title-display-text').textContent = devTitle;
+
+  // Toggle view elements inside wizard card
+  $('wizard-question-view').style.display = 'none';
+  $('btn-wizard-back').style.display = 'none';
+
+  const terminalView = $('wizard-terminal-view');
+  terminalView.style.display = 'flex';
+  terminalView.classList.remove('hidden');
+  terminalView.classList.add('flex');
+
+  $('wizard-terminal-title').textContent = devTitle;
+  $('wizard-terminal-message').textContent = stepData.message || '';
+
+  // Wait 2.5 seconds for dramatic feedback
+  await sleep(2500);
+
+  // Transition to dynamic log state
+  transitionTo(STATE.LOADING);
+  const animPromise = runConsoleLoadingSequence();
+
+  // Aggregate collectedPayload data
+  const questionnairePayload = buildQuestionnairePayload(collectedPayload);
+
+  const payload = {
+    code_content: "", // Built entirely via Akinator wizard
+    questionnaire: questionnairePayload,
+    vibe: appState.selectedVibe,
+    repo_name: ""
+  };
+
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    const genData = await response.json();
+    if (!response.ok) {
+      throw new Error(genData.error || "Generation compilation failed.");
+    }
+
+    // Complete loading animation
+    await animPromise;
+    $('console-progress-bar-fill').style.width = '100%';
+    $('console-percent-text').textContent = '100%';
+    await sleep(250);
+
+    // Populate assets and display
+    populateResults(genData.readme_md, genData.linkedin_post);
+    transitionTo(STATE.RESULT);
+
+  } catch (error) {
+    transitionTo(STATE.DASHBOARD);
+    showError(error.message);
   }
 }
 
@@ -301,9 +482,10 @@ async function runConsoleLoadingSequence() {
 
     // Mark line complete
     row.classList.add('done');
-    row.querySelector('.console-cursor')?.remove();
+    const cursor = row.querySelector('.console-cursor');
+    if (cursor) cursor.remove();
 
-    // Increment progress bar to max 99%
+    // Increment progress bar to max 95%
     const currentPercent = Math.round(((i + 1) / logsCount) * 95);
     bar.style.width = `${currentPercent}%`;
     percentText.textContent = `${currentPercent}%`;
@@ -375,7 +557,7 @@ function showCopyToast(toastElement) {
 }
 
 function determineDeveloperTitle() {
-  if (appState.maxYapTriggered || appState.wizard.category === 'D') {
+  if (appState.maxYapTriggered) {
     return 'THE ABSOLUTE YAPPER 📢';
   }
   if (appState.selectedVibe === 'corporate-alpha') {
@@ -499,7 +681,11 @@ function populateResults(readme, linkedin) {
   // Set Dev Profile banner
   const title = determineDeveloperTitle();
   if ($('dev-title-display-text')) $('dev-title-display-text').textContent = title;
-  if ($('header-dev-title')) $('header-dev-title').textContent = title;
+  
+  // Only change topbar badge if it wasn't already set by the Akinator wizard
+  if ($('header-dev-title') && $('header-dev-title').textContent.includes("YAPPING: IDLE")) {
+    $('header-dev-title').textContent = title;
+  }
 
   switchOutputTab('readme');
 }
@@ -507,7 +693,8 @@ function populateResults(readme, linkedin) {
 function handleResetGenerator() {
   // Clear inputs
   $('github-url-input').value = '';
-  $('github-file-badge').style.display = 'none';
+  const badge = $('github-file-badge');
+  if (badge) badge.style.display = 'none';
   
   // Clear manual textareas
   $('manual-core-logic').value = '';
@@ -515,7 +702,6 @@ function handleResetGenerator() {
   $('manual-challenge').value = '';
   
   appState.wizard = { category: '', categoryLabel: '', experimentalDetail: '' };
-  $('wizard-summary-card').style.display = 'none';
   appState.maxYapTriggered = false;
   $('slider-yap-length').value = 75;
   $('slider-label').textContent = 'Volume: 75%';
@@ -525,7 +711,7 @@ function handleResetGenerator() {
   transitionTo(STATE.DASHBOARD);
 }
 
-// --- SUBMISSION ACTION PIPELINE ---
+// --- SUBMISSION ACTION PIPELINE (Manual & GitHub) ---
 async function handleTransformSubmission() {
   clearError();
 
@@ -558,7 +744,6 @@ async function handleTransformSubmission() {
       repoName = fetchData.repo;
       
     } catch (err) {
-      await animPromise.catch(() => {});
       transitionTo(STATE.DASHBOARD);
       showError(err.message);
       return;
@@ -589,10 +774,10 @@ async function handleTransformSubmission() {
   const payload = {
     code_content: codeContent,
     questionnaire: {
-      problem: appState.wizard.experimentalDetail || "Exploring portfolio configurations and structure mappings",
-      category: appState.wizard.category || "A",
-      categoryLabel: appState.wizard.categoryLabel || "Web Application",
-      experimental_detail: appState.wizard.experimentalDetail || "",
+      problem: "Exploring portfolio configurations and structure mappings",
+      category: "Web Application",
+      categoryLabel: "Web Application",
+      experimental_detail: "",
       tech_stack: appState.currentMode === INPUT_MODE.GITHUB ? 'GitHub Repository' : ($('manual-frameworks').value.trim() || 'Vanilla')
     },
     vibe: appState.selectedVibe,
@@ -629,11 +814,14 @@ async function handleTransformSubmission() {
 // --- GLOBAL ERROR HANDLING ---
 function showError(msg) {
   const banner = $('error-banner');
-  $('error-message').textContent = msg;
-  banner.style.display = 'flex';
+  if (banner) {
+    $('error-message').textContent = msg;
+    banner.style.display = 'flex';
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Clear sticky error banner
 function clearError() {
   const banner = $('error-banner');
   if (banner) banner.style.display = 'none';
@@ -646,8 +834,12 @@ document.addEventListener('DOMContentLoaded', () => {
   initWizard();
   initResults();
 
+  // Load Akinator JSON schema asynchronously
+  fetchWizardData();
+
   // Closing error button
-  $('btn-close-error').addEventListener('click', clearError);
+  const closeErr = $('btn-close-error');
+  if (closeErr) closeErr.addEventListener('click', clearError);
 
   // Set default State 0: Landing page
   transitionTo(STATE.LANDING);

@@ -1,0 +1,1061 @@
+{
+  "meta": {
+    "version": "2.0.0",
+    "name": "YAP! Diagnostic Wizard — Akinator Developer Edition v2",
+    "description": "Full branching questionnaire v2. All branches now have 10-12 steps. Each END node contains collected_data ready to map to Flask /api/generate payload keys: category, problem, tech_stack, experimental_detail.",
+    "payload_keys": ["category", "problem", "tech_stack", "experimental_detail"],
+    "changelog": "v2: Branch B deepened from 7 to 12 steps (added auth, rate limiting/caching, background workers, containerization). Branch C deepened from 7 to 12 steps (added vector DB, model deployment, prediction storage, serving infrastructure). Branch D deepened from 6 to 11 steps (added power management, frontend dashboard, data retention, OTA updates). Branch E deepened from 5 to 11 steps (added real-time API reactivity, performance optimization, interactivity model, deployment/sharing, and statement layer)."
+  },
+
+  "steps": {
+
+    "S1": {
+      "id": "S1",
+      "phase": "MAIN GATE",
+      "question": "Alright. Your README is a blank void and your LinkedIn says 'passionate developer'. What cursed thing did you actually build?",
+      "options": [
+        { "label": "🌐  A web app — it runs in a browser and judges people", "value": "web_app", "next": "A1", "collects": { "category": "Web Application" } },
+        { "label": "⚙️  Backend / API / CLI — no UI, just raw terminal energy", "value": "backend", "next": "B1", "collects": { "category": "Backend / API / CLI Tool" } },
+        { "label": "📊  Data, ML, or AI — you trained something and now it has opinions", "value": "data_ml", "next": "C1", "collects": { "category": "Data / ML / AI Project" } },
+        { "label": "🔩  Hardware / IoT — there are wires on your desk and you're not sure why", "value": "hardware", "next": "D1", "collects": { "category": "Hardware / IoT / Embedded" } },
+        { "label": "🎨  Creative / Generative — vibes over function, art over tickets", "value": "creative", "next": "E1", "collects": { "category": "Creative / Generative / Visual" } }
+      ]
+    },
+
+    "A1": {
+      "id": "A1",
+      "phase": "BRANCH A — Web App",
+      "question": "Who is this web app actually FOR? And don't say 'everyone', that's not a target audience, that's a lack of planning.",
+      "options": [
+        { "label": "👤  Individual users — solo productivity, personal tools, or 'I built this for myself'", "value": "individual", "next": "A2", "collects": { "problem_context": "individual_tool" } },
+        { "label": "🏢  Businesses or teams — dashboards, SaaS, internal tools your manager will take credit for", "value": "business", "next": "A2", "collects": { "problem_context": "b2b_saas" } },
+        { "label": "🔧  Other developers — dev tools, CLI wrappers, libraries, stuff only 0.1% of people understand", "value": "devtools", "next": "A2", "collects": { "problem_context": "developer_tooling" } },
+        { "label": "🎮  Entertainment or community — games, social features, 'engagement metrics'", "value": "entertainment", "next": "A2", "collects": { "problem_context": "entertainment_social" } }
+      ]
+    },
+
+    "A2": {
+      "id": "A2",
+      "phase": "BRANCH A — Web App",
+      "question": "What's the CORE thing users actually DO in your app? If your app was a verb, what would it be?",
+      "options": [
+        { "label": "📝  Create & manage stuff — CRUD, forms, dashboards, the bread and butter", "value": "crud", "next": "A3", "collects": { "core_mechanic": "CRUD / Content Management" } },
+        { "label": "🔍  Search, filter, and discover — users finding needles in haystacks", "value": "search", "next": "A3", "collects": { "core_mechanic": "Search & Discovery" } },
+        { "label": "🤖  Automate or AI-generate — something happens without the user lifting a finger", "value": "automate", "next": "A3", "collects": { "core_mechanic": "Automation / AI Generation" } },
+        { "label": "🤝  Connect & collaborate — multiple users doing things together in real-time or async", "value": "collaborate", "next": "A3", "collects": { "core_mechanic": "Collaboration / Social" } },
+        { "label": "📊  Visualize & track — charts, metrics, 'data-driven insights' for the stakeholders", "value": "visualize", "next": "A3", "collects": { "core_mechanic": "Data Visualization / Monitoring" } }
+      ]
+    },
+
+    "A3": {
+      "id": "A3",
+      "phase": "BRANCH A — Web App",
+      "question": "Does your app have USER ACCOUNTS — login, registration, sessions, the whole authentication circus?",
+      "options": [
+        { "label": "✅  Yes — full auth. Users log in, have profiles, own their data", "value": "has_auth", "next": "A4", "collects": { "has_auth": true } },
+        { "label": "🔑  Yes but I outsourced it — OAuth only (Google, GitHub, etc.), not my problem", "value": "oauth_only", "next": "A4", "collects": { "has_auth": true, "auth_type": "OAuth / Third-party" } },
+        { "label": "❌  No auth — it's public, open, or single-user. No passwords were harmed.", "value": "no_auth", "next": "A4", "collects": { "has_auth": false } }
+      ]
+    },
+
+    "A4": {
+      "id": "A4",
+      "phase": "BRANCH A — Web App",
+      "question": "Does your app talk to a DATABASE? Something persistent where data lives between sessions?",
+      "options": [
+        { "label": "✅  Yes — a proper database. Data persists and I lose sleep over migrations", "value": "has_db", "next": "A5", "collects": { "has_db": true } },
+        { "label": "🔥  Yes — but it's BaaS: Firebase, Supabase, PocketBase. I let them deal with it.", "value": "has_baas", "next": "A5", "collects": { "has_db": true, "db_type": "BaaS (Firebase / Supabase / PocketBase)" } },
+        { "label": "❌  No DB — stateless, local storage, or everything lives in the user's browser", "value": "no_db", "next": "A6_nostack", "collects": { "has_db": false } }
+      ]
+    },
+
+    "A5": {
+      "id": "A5",
+      "phase": "BRANCH A — Web App — Tech Stack",
+      "question": "Alright, what FRONTEND framework are you using? Please say something interesting.",
+      "options": [
+        { "label": "⚛️  React — the default choice of people who stopped questioning defaults", "value": "react", "next": "A6_react", "collects": { "frontend_framework": "React" } },
+        { "label": "▲  Next.js — React but with SSR, routing, and an identity crisis about being a framework", "value": "nextjs", "next": "A6_next", "collects": { "frontend_framework": "Next.js" } },
+        { "label": "💚  Vue / Nuxt — the sensible choice that nobody hypes but everyone enjoys", "value": "vue", "next": "A6_vue", "collects": { "frontend_framework": "Vue / Nuxt" } },
+        { "label": "🔥  Svelte / SvelteKit — you compiled your opinions away and it felt good", "value": "svelte", "next": "A6_svelte", "collects": { "frontend_framework": "Svelte / SvelteKit" } },
+        { "label": "🌐  Vanilla JS / HTML / CSS — no framework, no bundler, no therapy", "value": "vanilla", "next": "A6_vanilla", "collects": { "frontend_framework": "Vanilla JS / HTML / CSS" } },
+        { "label": "🅰️  Angular — you work at a corporation and TypeScript is your love language", "value": "angular", "next": "A6_angular", "collects": { "frontend_framework": "Angular" } }
+      ]
+    },
+
+    "A6_react": {
+      "id": "A6_react",
+      "phase": "BRANCH A — React Stack",
+      "question": "React detected. What's powering the backend / server side?",
+      "options": [
+        { "label": "🟢  Node.js + Express — the classic combo, circa 2015, still running in prod", "value": "node_express", "next": "A7_sql", "collects": { "backend": "Node.js + Express" } },
+        { "label": "⚡  Node.js + Fastify / Hono — Express but you've read the benchmarks", "value": "node_fastify", "next": "A7_sql", "collects": { "backend": "Node.js + Fastify / Hono" } },
+        { "label": "🐍  Python + Flask / FastAPI — polyglot energy, frontend in JS, backend in Python", "value": "python_be", "next": "A7_sql", "collects": { "backend": "Python (Flask / FastAPI)" } },
+        { "label": "🔥  Firebase / Supabase — there is no backend, only vibes and cloud functions", "value": "baas_only", "next": "A8_deployment", "collects": { "backend": "BaaS only (Firebase / Supabase)", "db_type": "Firestore / Supabase DB" } }
+      ]
+    },
+
+    "A6_next": {
+      "id": "A6_next",
+      "phase": "BRANCH A — Next.js Stack",
+      "question": "Next.js — respectable. Are you using it full-stack or just as a frontend with a separate API?",
+      "options": [
+        { "label": "🏗️  Full-stack — API routes or Route Handlers live inside the Next.js app itself", "value": "nextjs_fullstack", "next": "A7_sql", "collects": { "backend": "Next.js Full-stack (API Routes / Route Handlers)" } },
+        { "label": "🔀  Separate backend — Next.js is just the frontend, API lives elsewhere", "value": "nextjs_fe_only", "next": "A7_sql", "collects": { "backend": "Next.js (Frontend) + Separate Backend" } },
+        { "label": "☁️  Serverless — Vercel / Netlify edge functions, no persistent server", "value": "nextjs_serverless", "next": "A8_deployment", "collects": { "backend": "Next.js + Serverless (Vercel / Netlify)", "db_type": "Serverless DB (PlanetScale / Neon / Turso)" } }
+      ]
+    },
+
+    "A6_vue": {
+      "id": "A6_vue",
+      "phase": "BRANCH A — Vue Stack",
+      "question": "Vue / Nuxt — good taste. What's the backend situation?",
+      "options": [
+        { "label": "🟢  Node.js + Express / Fastify — keeping it in the JS family", "value": "node_be", "next": "A7_sql", "collects": { "backend": "Node.js (Express / Fastify)" } },
+        { "label": "🐍  Python + Django / FastAPI — mixing languages like a true professional", "value": "python_be", "next": "A7_sql", "collects": { "backend": "Python (Django / FastAPI)" } },
+        { "label": "🐘  PHP + Laravel — you're not afraid of .php files and we respect that", "value": "laravel", "next": "A7_sql", "collects": { "backend": "PHP + Laravel" } },
+        { "label": "🔥  Supabase / Firebase — the backend is someone else's problem", "value": "baas", "next": "A8_deployment", "collects": { "backend": "BaaS (Supabase / Firebase)" } }
+      ]
+    },
+
+    "A6_svelte": {
+      "id": "A6_svelte",
+      "phase": "BRANCH A — Svelte Stack",
+      "question": "Svelte / SvelteKit — you love compile-time. How are you handling the backend?",
+      "options": [
+        { "label": "🏗️  SvelteKit full-stack — form actions, server routes, the whole deal", "value": "sveltekit_fullstack", "next": "A7_sql", "collects": { "backend": "SvelteKit Full-stack" } },
+        { "label": "🟢  Separate Node.js / Express backend", "value": "node_be", "next": "A7_sql", "collects": { "backend": "Svelte + Node.js Backend" } },
+        { "label": "🔥  BaaS — Firebase, Supabase, Pocketbase", "value": "baas", "next": "A8_deployment", "collects": { "backend": "Svelte + BaaS" } }
+      ]
+    },
+
+    "A6_vanilla": {
+      "id": "A6_vanilla",
+      "phase": "BRANCH A — Vanilla Stack",
+      "question": "No framework — I respect the commitment. What's generating or serving the HTML?",
+      "options": [
+        { "label": "📄  Pure static files — HTML, CSS, JS. Deployed to a CDN or GitHub Pages", "value": "static", "next": "A8_deployment", "collects": { "backend": "Static Files (No Backend)", "has_db": false } },
+        { "label": "🟢  Node.js backend serving templates (Express + EJS/Handlebars)", "value": "node_templates", "next": "A7_sql", "collects": { "backend": "Node.js + Server-side Templates" } },
+        { "label": "🐍  Python backend (Flask / FastAPI + Jinja2 templates)", "value": "python_templates", "next": "A7_sql", "collects": { "backend": "Python (Flask / FastAPI + Jinja2)" } }
+      ]
+    },
+
+    "A6_angular": {
+      "id": "A6_angular",
+      "phase": "BRANCH A — Angular Stack",
+      "question": "Angular. A bold, enterprise-flavored choice. What's the backend?",
+      "options": [
+        { "label": "☕  Java + Spring Boot — the full enterprise combo. Your PM is proud.", "value": "spring", "next": "A7_sql", "collects": { "backend": "Java + Spring Boot" } },
+        { "label": "🟢  Node.js + NestJS — TypeScript on both sides, you are built different", "value": "nestjs", "next": "A7_sql", "collects": { "backend": "Node.js + NestJS" } },
+        { "label": "🐍  Python + Django REST Framework", "value": "django_rest", "next": "A7_sql", "collects": { "backend": "Python + Django REST Framework" } },
+        { "label": "🔷  .NET / C# — Microsoft ecosystem, all the way down", "value": "dotnet", "next": "A7_sql", "collects": { "backend": ".NET / ASP.NET Core" } }
+      ]
+    },
+
+    "A6_nostack": {
+      "id": "A6_nostack",
+      "phase": "BRANCH A — No DB",
+      "question": "No database, got it. What frontend framework are we working with?",
+      "options": [
+        { "label": "⚛️  React / Next.js", "value": "react_next", "next": "A8_deployment", "collects": { "frontend_framework": "React / Next.js", "backend": "Stateless / No Backend" } },
+        { "label": "💚  Vue / Nuxt", "value": "vue_nuxt", "next": "A8_deployment", "collects": { "frontend_framework": "Vue / Nuxt", "backend": "Stateless / No Backend" } },
+        { "label": "🔥  Svelte / SvelteKit", "value": "svelte", "next": "A8_deployment", "collects": { "frontend_framework": "Svelte / SvelteKit", "backend": "Stateless / No Backend" } },
+        { "label": "🌐  Vanilla JS — browser APIs are all I need", "value": "vanilla", "next": "A8_deployment", "collects": { "frontend_framework": "Vanilla JS / HTML / CSS", "backend": "Stateless / No Backend" } }
+      ]
+    },
+
+    "A7_sql": {
+      "id": "A7_sql",
+      "phase": "BRANCH A — Database",
+      "question": "Database time. What flavor of data storage are you inflicting on yourself?",
+      "options": [
+        { "label": "🐘  PostgreSQL — the adult choice. ACID-compliant and you know what that means.", "value": "postgres", "next": "A7b_orm", "collects": { "database": "PostgreSQL" } },
+        { "label": "🍃  MongoDB — schemaless because you haven't decided what you're building yet", "value": "mongodb", "next": "A7b_orm", "collects": { "database": "MongoDB" } },
+        { "label": "🔴  MySQL / MariaDB — classic, reliable, your hosting provider defaulted to it", "value": "mysql", "next": "A7b_orm", "collects": { "database": "MySQL / MariaDB" } },
+        { "label": "⚡  Redis — caching layer, session store, or you're using it as a primary DB (bold)", "value": "redis", "next": "A8_deployment", "collects": { "database": "Redis" } },
+        { "label": "🪶  SQLite — runs on file, perfect for local dev or 'I shipped to prod with this'", "value": "sqlite", "next": "A7b_orm", "collects": { "database": "SQLite" } }
+      ]
+    },
+
+    "A7b_orm": {
+      "id": "A7b_orm",
+      "phase": "BRANCH A — ORM / Query Layer",
+      "question": "Are you talking to that database like a civilized developer or writing raw SQL at 2am?",
+      "options": [
+        { "label": "🔷  Prisma — type-safe, schema-first, and your IDE autocompletes your queries", "value": "prisma", "next": "A8_deployment", "collects": { "orm": "Prisma" } },
+        { "label": "🌊  Drizzle — Prisma but you read the bundle size discourse", "value": "drizzle", "next": "A8_deployment", "collects": { "orm": "Drizzle ORM" } },
+        { "label": "🐍  SQLAlchemy / Tortoise ORM — Python ORM, because you're living in two worlds", "value": "sqlalchemy", "next": "A8_deployment", "collects": { "orm": "SQLAlchemy / Tortoise ORM" } },
+        { "label": "🌱  Sequelize / TypeORM — the OGs of Node.js ORMs, been here since forever", "value": "sequelize", "next": "A8_deployment", "collects": { "orm": "Sequelize / TypeORM" } },
+        { "label": "📜  Raw SQL — you write JOIN statements by hand and feel nothing", "value": "raw_sql", "next": "A8_deployment", "collects": { "orm": "Raw SQL (No ORM)" } }
+      ]
+    },
+
+    "A8_deployment": {
+      "id": "A8_deployment",
+      "phase": "BRANCH A — Deployment",
+      "question": "Where does this app actually LIVE when it's not on localhost?",
+      "options": [
+        { "label": "▲  Vercel — one push to main and it's live, the way God intended", "value": "vercel", "next": "A9_problem", "collects": { "deployment": "Vercel" } },
+        { "label": "🟠  Netlify — like Vercel but you got here first", "value": "netlify", "next": "A9_problem", "collects": { "deployment": "Netlify" } },
+        { "label": "🐳  Docker + VPS (DigitalOcean / Hetzner / Linode) — self-hosted, full control", "value": "docker_vps", "next": "A9_problem", "collects": { "deployment": "Docker + VPS (Self-hosted)" } },
+        { "label": "☁️  AWS / GCP / Azure — enterprise cloud, expense reports required", "value": "big_cloud", "next": "A9_problem", "collects": { "deployment": "Cloud Provider (AWS / GCP / Azure)" } },
+        { "label": "🏠  Localhost only — it works on my machine and that's enough for now", "value": "localhost", "next": "A9_problem", "collects": { "deployment": "Local Only (Not Deployed)" } },
+        { "label": "🚂  Railway / Render / Fly.io — the developer-friendly middle ground", "value": "paas", "next": "A9_problem", "collects": { "deployment": "PaaS (Railway / Render / Fly.io)" } }
+      ]
+    },
+
+    "A9_problem": {
+      "id": "A9_problem",
+      "phase": "BRANCH A — Problem Statement",
+      "question": "Final boss. What PROBLEM did this app exist to solve? Before your app, what was the annoying reality?",
+      "options": [
+        { "label": "🗂️  Everything was scattered — too many tabs, tools, or spreadsheets managing one thing", "value": "scattered_tools", "next": "A_END", "collects": { "problem": "Consolidates scattered workflows and tools into a single unified interface" } },
+        { "label": "⏱️  A repetitive manual task was eating hours — it screamed for automation", "value": "manual_work", "next": "A_END", "collects": { "problem": "Automates a repetitive, time-consuming manual process" } },
+        { "label": "😵  The existing solution was ugly, overcomplicated, or paywalled", "value": "bad_ux", "next": "A_END", "collects": { "problem": "Provides a simpler, faster, or more accessible alternative to existing solutions" } },
+        { "label": "🕳️  This solution didn't exist — I had the idea and committed the crime", "value": "original", "next": "A_END", "collects": { "problem": "Fills a genuine gap — no existing tool solved this specific problem" } },
+        { "label": "🧪  It's a learning project — the problem I solved was my own ignorance", "value": "learning", "next": "A_END", "collects": { "problem": "Built as a learning project to explore and master a specific technology or concept" } }
+      ]
+    },
+
+    "A_END": {
+      "id": "A_END",
+      "phase": "END",
+      "type": "terminal",
+      "developer_title": "THE FULL STACK GRINDER 💪",
+      "message": "Stack locked. README incoming. You may have used a framework to avoid thinking, but at least you're honest about it.",
+      "payload_note": "Aggregate all collects from this path into category, problem, tech_stack, and experimental_detail keys."
+    },
+
+    "B1": {
+      "id": "B1",
+      "phase": "BRANCH B — Backend / API / CLI",
+      "question": "Backend dev spotted. What specific kind of server-side abomination did you create?",
+      "options": [
+        { "label": "🔌  A REST API — endpoints, status codes, and someone will definitely misuse the 200 OK", "value": "rest_api", "next": "B2", "collects": { "project_type": "REST API" } },
+        { "label": "🔷  A GraphQL API — you prefer querying with a query language inside a query", "value": "graphql", "next": "B2", "collects": { "project_type": "GraphQL API" } },
+        { "label": "🖥️  A CLI tool — runs in terminal, has --help, makes devs feel powerful", "value": "cli", "next": "B2_cli", "collects": { "project_type": "CLI Tool" } },
+        { "label": "🤖  A bot or automation script — does things on a schedule while you sleep", "value": "bot", "next": "B2_bot", "collects": { "project_type": "Automation Bot / Script" } },
+        { "label": "🔗  A microservice — one specific job, deployed in a container, part of a bigger system", "value": "microservice", "next": "B2", "collects": { "project_type": "Microservice" } },
+        { "label": "📦  A library or SDK — other developers are your users, god help them", "value": "library", "next": "B2_lib", "collects": { "project_type": "Library / SDK / Package" } }
+      ]
+    },
+
+    "B2": {
+      "id": "B2",
+      "phase": "BRANCH B — API / Microservice Purpose",
+      "question": "What is this API / service actually responsible for? Its raison d'être, if you will (it's fancier in French).",
+      "options": [
+        { "label": "🚦  Core data layer — handles all business logic and database ops for a frontend app", "value": "data_layer", "next": "B3_lang", "collects": { "problem": "Serves as the core data and business logic layer for a client application" } },
+        { "label": "🔄  Integration glue — connects 2+ external APIs or services so they play nice", "value": "integration", "next": "B3_lang", "collects": { "problem": "Acts as an integration layer, connecting and normalizing multiple third-party services" } },
+        { "label": "⚡  Performance offload — handles CPU or I/O heavy work so the main app doesn't choke", "value": "performance", "next": "B3_lang", "collects": { "problem": "Offloads computationally intensive tasks to improve overall system performance" } },
+        { "label": "🛡️  Auth / security gateway — handles tokens, permissions, rate limiting, the bouncer", "value": "auth_gateway", "next": "B3_lang", "collects": { "problem": "Centralizes authentication, authorization, and API security concerns" } },
+        { "label": "📬  Event / queue processor — consumes messages from a queue and does things with them", "value": "queue", "next": "B3_lang", "collects": { "problem": "Processes asynchronous events and messages from a queue system" } }
+      ]
+    },
+
+    "B2_cli": {
+      "id": "B2_cli",
+      "phase": "BRANCH B — CLI",
+      "question": "A CLI tool — nice. What problem does running this command actually solve?",
+      "options": [
+        { "label": "🏗️  Project scaffolding / boilerplate generator — creates files so you don't have to", "value": "scaffold", "next": "B3_lang", "collects": { "problem": "Scaffolds projects or generates boilerplate code to accelerate developer workflows" } },
+        { "label": "🔁  Automates a repeated dev workflow — build, deploy, lint, test pipeline helper", "value": "workflow", "next": "B3_lang", "collects": { "problem": "Automates a repetitive developer workflow or CI/CD step" } },
+        { "label": "🔍  Data processing or file manipulation — reads, transforms, outputs structured data", "value": "data_proc", "next": "B3_lang", "collects": { "problem": "Processes, transforms, or analyzes data files directly from the command line" } },
+        { "label": "🌐  Hits an API and formats the output — a nice wrapper around something annoying", "value": "api_wrapper", "next": "B3_lang", "collects": { "problem": "Provides a clean terminal interface for interacting with an external API" } }
+      ]
+    },
+
+    "B2_bot": {
+      "id": "B2_bot",
+      "phase": "BRANCH B — Bot",
+      "question": "A bot. Nice. Where does this bot actually live and operate?",
+      "options": [
+        { "label": "💬  Discord / Slack / Telegram — it lives in a chat platform and people talk to it", "value": "chat_bot", "next": "B3_lang", "collects": { "problem": "Operates as a chat bot within a messaging platform (Discord / Slack / Telegram)", "experimental_detail": "Chat Bot Integration" } },
+        { "label": "🌐  Web scraper / crawler — reads websites and extracts data like a digital vacuum", "value": "scraper", "next": "B3_lang", "collects": { "problem": "Scrapes and extracts structured data from web pages automatically", "experimental_detail": "Web Scraping Bot" } },
+        { "label": "⏰  Scheduled job / cron worker — runs silently at set intervals without anyone watching", "value": "cron", "next": "B3_lang", "collects": { "problem": "Runs scheduled background tasks and automations at defined intervals", "experimental_detail": "Scheduled Automation Worker" } },
+        { "label": "📧  Email / notification automation — sends the right thing to the right person at the right time", "value": "notification", "next": "B3_lang", "collects": { "problem": "Automates email or notification delivery based on triggers or schedules", "experimental_detail": "Notification Automation System" } }
+      ]
+    },
+
+    "B2_lib": {
+      "id": "B2_lib",
+      "phase": "BRANCH B — Library",
+      "question": "A library — so other developers are your users. What problem does your package solve for them?",
+      "options": [
+        { "label": "🎨  UI components — a reusable component library so people stop reinventing buttons", "value": "ui_lib", "next": "B3_lang", "collects": { "problem": "Provides a reusable library of UI components for consistent interface development" } },
+        { "label": "🛠️  Utility functions — helpers, formatters, validators that every project needs", "value": "utils", "next": "B3_lang", "collects": { "problem": "Provides a collection of reusable utility functions to simplify common programming tasks" } },
+        { "label": "🔌  API client / SDK wrapper — makes integrating a specific service less painful", "value": "sdk", "next": "B3_lang", "collects": { "problem": "Wraps a complex API or service in a clean, developer-friendly SDK" } },
+        { "label": "🧩  Framework plugin / middleware — extends an existing framework with new capabilities", "value": "plugin", "next": "B3_lang", "collects": { "problem": "Extends a framework or tool with additional capabilities via a plugin or middleware" } }
+      ]
+    },
+
+    "B3_lang": {
+      "id": "B3_lang",
+      "phase": "BRANCH B — Language & Framework",
+      "question": "What language is this backend written in? Don't be ashamed. We've seen worse.",
+      "options": [
+        { "label": "🟢  Node.js — JavaScript everywhere, consequences everywhere", "value": "nodejs", "next": "B4_node", "collects": { "language": "Node.js / JavaScript" } },
+        { "label": "🐍  Python — readable, powerful, and the data science crowd refuses to leave", "value": "python", "next": "B4_python", "collects": { "language": "Python" } },
+        { "label": "🦫  Go — compiled, fast, minimal, and you've explained goroutines at least once this week", "value": "golang", "next": "B4_go", "collects": { "language": "Go (Golang)" } },
+        { "label": "🦀  Rust — memory safe, blazingly fast, and you have a crab emoji somewhere in your bio", "value": "rust", "next": "B4_rust", "collects": { "language": "Rust" } },
+        { "label": "☕  Java / Kotlin — enterprise grade, Spring flavored, 500mb JAR included", "value": "java", "next": "B4_java", "collects": { "language": "Java / Kotlin" } },
+        { "label": "🐘  PHP — yes, still. It runs half the internet and it will outlive us all.", "value": "php", "next": "B4_php", "collects": { "language": "PHP" } }
+      ]
+    },
+
+    "B4_node": {
+      "id": "B4_node",
+      "phase": "BRANCH B — Node.js Framework",
+      "question": "Node.js backend. What framework, if any, did you slap on top of it?",
+      "options": [
+        { "label": "🚂  Express.js — the jQuery of backend frameworks. Ubiquitous for a reason.", "value": "express", "next": "B5_db", "collects": { "framework": "Express.js" } },
+        { "label": "⚡  Fastify — Express but you care about microseconds and write schema upfront", "value": "fastify", "next": "B5_db", "collects": { "framework": "Fastify" } },
+        { "label": "🐦  NestJS — Angular for the backend, decorators everywhere, OOP maximalist", "value": "nestjs", "next": "B5_db", "collects": { "framework": "NestJS" } },
+        { "label": "🔥  Hono — edge-first, tiny, and you benchmarked it against everything else", "value": "hono", "next": "B5_db", "collects": { "framework": "Hono" } },
+        { "label": "📦  No framework — raw Node.js http module, you are a different kind of person", "value": "raw_node", "next": "B5_db", "collects": { "framework": "Raw Node.js (No Framework)" } }
+      ]
+    },
+
+    "B4_python": {
+      "id": "B4_python",
+      "phase": "BRANCH B — Python Framework",
+      "question": "Python backend. Which framework did you choose to express your pain?",
+      "options": [
+        { "label": "🌶️  Flask — minimal, micro, and you wrote the auth yourself (god help us)", "value": "flask", "next": "B5_db", "collects": { "framework": "Flask" } },
+        { "label": "⚡  FastAPI — async, typed, auto-docs. The correct answer for new projects.", "value": "fastapi", "next": "B5_db", "collects": { "framework": "FastAPI" } },
+        { "label": "🎸  Django — batteries included, ORM included, opinions very much included", "value": "django", "next": "B5_db", "collects": { "framework": "Django" } },
+        { "label": "🎯  Django REST Framework — Django but you're building an API, not rendering templates", "value": "drf", "next": "B5_db", "collects": { "framework": "Django REST Framework (DRF)" } }
+      ]
+    },
+
+    "B4_go": {
+      "id": "B4_go",
+      "phase": "BRANCH B — Go Framework",
+      "question": "Go. Bold. Did you use a router/framework or are you net/http-ing like a true Gopher?",
+      "options": [
+        { "label": "🌿  Gin — fast HTTP framework, good defaults, most people's first Go web choice", "value": "gin", "next": "B5_db", "collects": { "framework": "Gin" } },
+        { "label": "🌊  Echo — similar to Gin but with slightly different opinions about middleware", "value": "echo", "next": "B5_db", "collects": { "framework": "Echo" } },
+        { "label": "🔥  Fiber — Express-inspired Go framework, familiar feel, fast runtime", "value": "fiber", "next": "B5_db", "collects": { "framework": "Fiber" } },
+        { "label": "🔩  Raw net/http — no external dependencies, just you and the standard library", "value": "raw_http", "next": "B5_db", "collects": { "framework": "Raw net/http (No Framework)" } }
+      ]
+    },
+
+    "B4_rust": {
+      "id": "B4_rust",
+      "phase": "BRANCH B — Rust Framework",
+      "question": "Rust backend. You clearly enjoy fighting the borrow checker. Which framework?",
+      "options": [
+        { "label": "🪓  Axum — Tokio-native, ergonomic, the current community favorite", "value": "axum", "next": "B5_db", "collects": { "framework": "Axum" } },
+        { "label": "🚀  Actix-web — blazingly fast, actor model, benchmarks love it", "value": "actix", "next": "B5_db", "collects": { "framework": "Actix-web" } },
+        { "label": "🌊  Warp — filter-based, composable, functional programming vibes", "value": "warp", "next": "B5_db", "collects": { "framework": "Warp" } }
+      ]
+    },
+
+    "B4_java": {
+      "id": "B4_java",
+      "phase": "BRANCH B — Java / Kotlin Framework",
+      "question": "Java / Kotlin. Enterprise tier. What's the framework?",
+      "options": [
+        { "label": "🌱  Spring Boot — the industry standard, XML config nightmares included at no extra charge", "value": "spring", "next": "B5_db", "collects": { "framework": "Spring Boot" } },
+        { "label": "⚡  Quarkus — cloud-native, fast startup, Kubernetes-first Java", "value": "quarkus", "next": "B5_db", "collects": { "framework": "Quarkus" } },
+        { "label": "🔷  Ktor (Kotlin) — async, lightweight, and you chose Kotlin for a reason", "value": "ktor", "next": "B5_db", "collects": { "framework": "Ktor (Kotlin)" } }
+      ]
+    },
+
+    "B4_php": {
+      "id": "B4_php",
+      "phase": "BRANCH B — PHP Framework",
+      "question": "PHP. Respect. Framework?",
+      "options": [
+        { "label": "🔴  Laravel — the PHP framework that made PHP developers feel good about their life choices", "value": "laravel", "next": "B5_db", "collects": { "framework": "Laravel" } },
+        { "label": "⚡  Symfony — enterprise PHP, component-based, used by Laravel under the hood anyway", "value": "symfony", "next": "B5_db", "collects": { "framework": "Symfony" } },
+        { "label": "🕰️  Vanilla PHP — no framework, just include files and regrets", "value": "vanilla_php", "next": "B5_db", "collects": { "framework": "Vanilla PHP (No Framework)" } }
+      ]
+    },
+
+    "B5_db": {
+      "id": "B5_db",
+      "phase": "BRANCH B — Database / Storage",
+      "question": "Does this backend need to PERSIST data somewhere — a database, cache, or storage service?",
+      "options": [
+        { "label": "🐘  PostgreSQL — you've heard 'just use Postgres' enough times to finally listen", "value": "postgres", "next": "B6_auth", "collects": { "database": "PostgreSQL" } },
+        { "label": "🍃  MongoDB — document model, flexible schema, you'll normalize it later (you won't)", "value": "mongo", "next": "B6_auth", "collects": { "database": "MongoDB" } },
+        { "label": "⚡  Redis — cache, session store, pub/sub, or bravely your primary DB", "value": "redis", "next": "B6_auth", "collects": { "database": "Redis" } },
+        { "label": "🔴  MySQL / MariaDB — the classic, reliable, your tutorial used it in 2018", "value": "mysql", "next": "B6_auth", "collects": { "database": "MySQL / MariaDB" } },
+        { "label": "📁  No database — stateless service, reads from files, or delegates storage elsewhere", "value": "no_db", "next": "B6_auth", "collects": { "database": "None (Stateless Service)" } }
+      ]
+    },
+
+    "B6_auth": {
+      "id": "B6_auth",
+      "phase": "BRANCH B — Authentication Strategy",
+      "question": "Does your API authenticate callers? And how — because 'I'll add auth later' is not an answer that ages well.",
+      "options": [
+        { "label": "🔑  API Keys — simple, stateless, the classic 'header: Bearer your-secret-shame'", "value": "api_key", "next": "B7_ratelimit", "collects": { "auth_strategy": "API Key Authentication", "tech_stack": "API Key Auth" } },
+        { "label": "🎫  JWT / OAuth 2.0 — tokens, scopes, refresh flows, the full auth ceremony", "value": "jwt_oauth", "next": "B7_ratelimit", "collects": { "auth_strategy": "JWT / OAuth 2.0", "tech_stack": "JWT / OAuth 2.0 Auth" } },
+        { "label": "🔐  Third-party auth provider — Auth0, Clerk, Firebase Auth, Cognito. Someone else's problem.", "value": "third_party_auth", "next": "B7_ratelimit", "collects": { "auth_strategy": "Third-Party Auth Provider (Auth0 / Clerk / Firebase Auth)", "tech_stack": "Managed Auth Provider" } },
+        { "label": "🔒  Session-based — server-side sessions, cookies, your grandma's auth system (still works)", "value": "session", "next": "B7_ratelimit", "collects": { "auth_strategy": "Session-Based Auth (Server-Side Sessions + Cookies)", "tech_stack": "Session Auth" } },
+        { "label": "🏝️  No auth — public API, internal only, or you live dangerously", "value": "no_auth", "next": "B7_ratelimit", "collects": { "auth_strategy": "No Authentication (Public / Internal API)" } }
+      ]
+    },
+
+    "B7_ratelimit": {
+      "id": "B7_ratelimit",
+      "phase": "BRANCH B — Rate Limiting & Caching",
+      "question": "Does your service have any RATE LIMITING or CACHING strategy? Or do you just pray your server survives traffic?",
+      "options": [
+        { "label": "🚦  Rate limiting implemented — token bucket, sliding window, or API gateway level (NGINX, Kong)", "value": "rate_limit", "next": "B8_workers", "collects": { "tech_stack": "Rate Limiting (Token Bucket / Sliding Window / API Gateway)", "experimental_detail": "API rate limiting enforced at middleware or gateway level" } },
+        { "label": "⚡  Redis caching — hot data cached in Redis, TTL configured, cache invalidation nightmares included", "value": "redis_cache", "next": "B8_workers", "collects": { "tech_stack": "Redis Caching Layer (TTL-based, hot data)", "experimental_detail": "Redis used as an in-memory caching layer to reduce DB load" } },
+        { "label": "🌐  CDN / edge caching — static assets and responses cached at the network level (Cloudflare, Fastly)", "value": "cdn_cache", "next": "B8_workers", "collects": { "tech_stack": "CDN / Edge Cache (Cloudflare / Fastly)", "experimental_detail": "CDN-level caching for static and semi-static API responses" } },
+        { "label": "📦  In-memory / app-level cache — LRU cache, memoization, or a dictionary that got out of hand", "value": "in_memory", "next": "B8_workers", "collects": { "tech_stack": "In-Memory Caching (LRU / Memoization)", "experimental_detail": "Application-level in-memory cache for frequently computed results" } },
+        { "label": "🙏  None — it either doesn't need it, or you're just optimistic about traffic", "value": "no_cache", "next": "B8_workers", "collects": { "tech_stack": "No Caching / Rate Limiting (Stateless or Low-Traffic Service)" } }
+      ]
+    },
+
+    "B8_workers": {
+      "id": "B8_workers",
+      "phase": "BRANCH B — Background Workers & Jobs",
+      "question": "Does your service run any BACKGROUND JOBS or ASYNC WORKERS — things that chug away while the main thread pretends everything is fine?",
+      "options": [
+        { "label": "🔁  Celery / RQ / BullMQ — task queue with workers, retries, and a dashboard you'll check once", "value": "task_queue", "next": "B9_containerize", "collects": { "tech_stack": "Background Task Queue (Celery / RQ / BullMQ)", "experimental_detail": "Asynchronous task processing with a dedicated worker queue system" } },
+        { "label": "⏰  Cron jobs / scheduled tasks — runs at set intervals, crontab or APScheduler, silent and judgemental", "value": "cron_jobs", "next": "B9_containerize", "collects": { "tech_stack": "Scheduled Cron Jobs (crontab / APScheduler / node-cron)", "experimental_detail": "Time-based job scheduling for periodic background processing" } },
+        { "label": "📡  Message queue / event-driven — Kafka, RabbitMQ, SQS. It consumes events and reacts.", "value": "message_queue", "next": "B9_containerize", "collects": { "tech_stack": "Message Queue / Event-Driven Workers (Kafka / RabbitMQ / SQS)", "experimental_detail": "Event-driven architecture with message broker for async worker communication" } },
+        { "label": "🌊  Async/await only — Python asyncio or Node.js event loop, no separate worker process", "value": "async_only", "next": "B9_containerize", "collects": { "tech_stack": "Async I/O (asyncio / Node.js Event Loop, no separate workers)", "experimental_detail": "Concurrency handled via async event loop without separate worker processes" } },
+        { "label": "🧘  No background workers — it's synchronous, request-response, and that's fine", "value": "no_workers", "next": "B9_containerize", "collects": { "tech_stack": "Synchronous Request-Response (No Background Workers)" } }
+      ]
+    },
+
+    "B9_containerize": {
+      "id": "B9_containerize",
+      "phase": "BRANCH B — Containerization & Orchestration",
+      "question": "Is this service containerized? Does it live in a Docker image, or does it run directly on the machine like it's 2012?",
+      "options": [
+        { "label": "🐳  Docker — Dockerfile written, image built, 'it works on my machine' is no longer an excuse", "value": "docker", "next": "B10_observability", "collects": { "tech_stack": "Docker (Containerized)", "experimental_detail": "Service packaged as a Docker image for consistent, reproducible deployment" } },
+        { "label": "🏗️  Docker Compose — multi-container setup, app + DB + Redis all in one docker-compose.yml symphony", "value": "docker_compose", "next": "B10_observability", "collects": { "tech_stack": "Docker Compose (Multi-container Orchestration)", "experimental_detail": "Multi-service Docker Compose setup orchestrating app, database, and cache containers" } },
+        { "label": "☸️  Kubernetes / Helm — you have replicas, health checks, and an ops team that hates you", "value": "kubernetes", "next": "B10_observability", "collects": { "tech_stack": "Kubernetes / Helm (Container Orchestration)", "experimental_detail": "Production-grade container orchestration with Kubernetes for scaling and reliability" } },
+        { "label": "📦  Deployed directly — systemd service, PM2, or bare metal. The container discourse bores you.", "value": "direct", "next": "B10_observability", "collects": { "tech_stack": "Direct Deployment (PM2 / systemd / Bare Metal)", "experimental_detail": "Process-managed deployment without containerization" } }
+      ]
+    },
+
+    "B10_observability": {
+      "id": "B10_observability",
+      "phase": "BRANCH B — Observability & Monitoring",
+      "question": "How do you know when this thing breaks? Do you have monitoring, or does a user DM you on Discord?",
+      "options": [
+        { "label": "📊  Prometheus + Grafana — metrics scraped, dashboards configured, you feel like an SRE", "value": "prometheus", "next": "B11_deploy", "collects": { "tech_stack": "Prometheus + Grafana (Metrics & Monitoring)", "experimental_detail": "Full observability stack with Prometheus metrics scraping and Grafana dashboards" } },
+        { "label": "🔍  Structured logging — JSON logs to stdout, shipped to ELK / Loki / Datadog for analysis", "value": "structured_logs", "next": "B11_deploy", "collects": { "tech_stack": "Structured Logging (JSON → ELK / Loki / Datadog)", "experimental_detail": "Structured JSON logging pipeline for centralized log aggregation and search" } },
+        { "label": "🐛  Sentry / error tracking — catches exceptions, sends alerts, screenshot of your shame in the inbox", "value": "sentry", "next": "B11_deploy", "collects": { "tech_stack": "Sentry / Error Tracking (Exception Monitoring)", "experimental_detail": "Real-time error tracking and alerting via Sentry or equivalent" } },
+        { "label": "📝  Basic console logs — console.log or print() all the way down, no shame (okay, some shame)", "value": "console_logs", "next": "B11_deploy", "collects": { "tech_stack": "Basic Console Logging (Development-grade observability)" } },
+        { "label": "🙈  Nothing — production is a black box and you're not ready to open it", "value": "no_monitoring", "next": "B11_deploy", "collects": { "tech_stack": "No Monitoring (Observability TBD)" } }
+      ]
+    },
+
+    "B11_deploy": {
+      "id": "B11_deploy",
+      "phase": "BRANCH B — Deployment Target",
+      "question": "Final question. Where does this backend actually RUN in production — or at least, where does it pretend to?",
+      "options": [
+        { "label": "☁️  Cloud function / serverless — scales to zero, costs pennies, cold starts haunt your dreams", "value": "serverless", "next": "B_END", "collects": { "deployment": "Serverless (Lambda / Cloud Run / Cloud Functions)" } },
+        { "label": "🖥️  VPS / dedicated server — you SSH in and it runs as a systemd process, old school respect", "value": "vps", "next": "B_END", "collects": { "deployment": "VPS / Dedicated Server (Self-Managed)" } },
+        { "label": "🚂  PaaS — Railway, Render, Fly.io. Push code, get URL, check dashboard, pay invoice.", "value": "paas", "next": "B_END", "collects": { "deployment": "PaaS (Railway / Render / Fly.io)" } },
+        { "label": "☸️  Kubernetes cluster — EKS, GKE, AKS, or self-hosted. You have a runbook.", "value": "k8s_prod", "next": "B_END", "collects": { "deployment": "Kubernetes Cluster (EKS / GKE / AKS)" } },
+        { "label": "🏠  Localhost only — it works on my machine and the README will say 'deployment: coming soon'", "value": "local", "next": "B_END", "collects": { "deployment": "Local Only (Not Yet Deployed)" } }
+      ]
+    },
+
+    "B_END": {
+      "id": "B_END",
+      "phase": "END",
+      "type": "terminal",
+      "developer_title": "THE BACKEND BEAST 🔌",
+      "message": "Backend fully interrogated — auth, caching, workers, monitoring, the works. Your README will make your endpoints sound intentional and your architecture look like it was planned from day one.",
+      "payload_note": "Aggregate all collects into category, problem, tech_stack, and experimental_detail keys."
+    },
+
+    "C1": {
+      "id": "C1",
+      "phase": "BRANCH C — Data / ML / AI",
+      "question": "Data / ML / AI spotted. What kind of model crime are we documenting here?",
+      "options": [
+        { "label": "🤖  Classical ML — scikit-learn, XGBoost, random forests, things that fit in memory", "value": "classical_ml", "next": "C2_classical", "collects": { "project_type": "Classical Machine Learning" } },
+        { "label": "🧠  Deep learning — PyTorch, TensorFlow, GPUs, and electricity bills", "value": "deep_learning", "next": "C2_dl", "collects": { "project_type": "Deep Learning / Neural Networks" } },
+        { "label": "🦜  LLM / GenAI — you're prompting, fine-tuning, or RAG-ing something large", "value": "llm", "next": "C2_llm", "collects": { "project_type": "LLM / Generative AI Application" } },
+        { "label": "📊  Data analysis / visualization — pandas, charts, insights, not a model but still science", "value": "data_analysis", "next": "C2_data", "collects": { "project_type": "Data Analysis / Visualization" } },
+        { "label": "🔁  Data pipeline / ETL — ingests, transforms, loads. The plumbing of data.", "value": "pipeline", "next": "C2_pipeline", "collects": { "project_type": "Data Pipeline / ETL" } }
+      ]
+    },
+
+    "C2_classical": {
+      "id": "C2_classical",
+      "phase": "BRANCH C — Classical ML Task",
+      "question": "Classical ML. What domain is your model pretending to understand?",
+      "options": [
+        { "label": "📈  Regression — predicts a number, like house prices or your project's due date", "value": "regression", "next": "C3_classical", "collects": { "ml_task": "Regression (Predicting Continuous Values)" } },
+        { "label": "🏷️  Classification — predicts a category. Spam or not spam. The eternal problem.", "value": "classification", "next": "C3_classical", "collects": { "ml_task": "Classification (Predicting Categories)" } },
+        { "label": "🔍  Clustering — unsupervised, finds hidden groups, no labels needed or available", "value": "clustering", "next": "C3_classical", "collects": { "ml_task": "Clustering (Unsupervised Pattern Discovery)" } },
+        { "label": "🚨  Anomaly detection — spots the weird outlier in a sea of normal", "value": "anomaly", "next": "C3_classical", "collects": { "ml_task": "Anomaly Detection" } },
+        { "label": "💬  NLP with classical ML — TF-IDF, Naive Bayes, text without the transformer drama", "value": "nlp_classical", "next": "C3_classical", "collects": { "ml_task": "Classical NLP (TF-IDF / Bag-of-Words approach)" } }
+      ]
+    },
+
+    "C3_classical": {
+      "id": "C3_classical",
+      "phase": "BRANCH C — Classical ML Data",
+      "question": "What data are you feeding this model? What's the input source?",
+      "options": [
+        { "label": "📊  Tabular / structured data — CSVs, spreadsheets, SQL exports, the bread and butter", "value": "tabular", "next": "C4_stack_classical", "collects": { "data_type": "Tabular / Structured Data (CSV, SQL)" } },
+        { "label": "📝  Text data — reviews, articles, comments, logs, anything humans typed", "value": "text", "next": "C4_stack_classical", "collects": { "data_type": "Text / NLP Data" } },
+        { "label": "⏰  Time-series — sensor readings, stock prices, anything with a timestamp", "value": "timeseries", "next": "C4_stack_classical", "collects": { "data_type": "Time-Series Data" } }
+      ]
+    },
+
+    "C4_stack_classical": {
+      "id": "C4_stack_classical",
+      "phase": "BRANCH C — Classical ML Tools",
+      "question": "Tech stack for classical ML. What libraries are actually in your requirements.txt?",
+      "options": [
+        { "label": "🔬  scikit-learn — the standard library for ML. If it's not here, are you even ML?", "value": "sklearn", "next": "C8_prediction_storage", "collects": { "ml_framework": "scikit-learn" } },
+        { "label": "🌲  XGBoost / LightGBM / CatBoost — gradient boosted trees, Kaggle's weapon of choice", "value": "xgboost", "next": "C8_prediction_storage", "collects": { "ml_framework": "XGBoost / LightGBM / CatBoost" } },
+        { "label": "📊  statsmodels — you care about p-values and confidence intervals, a true statistician", "value": "statsmodels", "next": "C8_prediction_storage", "collects": { "ml_framework": "statsmodels (Statistical Modeling)" } }
+      ]
+    },
+
+    "C2_dl": {
+      "id": "C2_dl",
+      "phase": "BRANCH C — Deep Learning Domain",
+      "question": "Deep learning. What kind of data is your network trying to make sense of?",
+      "options": [
+        { "label": "👁️  Computer Vision — images, video, object detection, segmentation, that kind of fun", "value": "cv", "next": "C3_dl_cv", "collects": { "dl_domain": "Computer Vision" } },
+        { "label": "📝  NLP / Text — transformers, embeddings, sequence models, understanding language", "value": "nlp", "next": "C3_dl_nlp", "collects": { "dl_domain": "NLP / Text Understanding" } },
+        { "label": "🎵  Audio / Speech — waveforms, spectrograms, voice, music", "value": "audio", "next": "C3_dl_audio", "collects": { "dl_domain": "Audio / Speech Processing" } },
+        { "label": "🎮  Reinforcement learning — an agent, an environment, a reward function, and a lot of compute", "value": "rl", "next": "C4_stack_dl", "collects": { "dl_domain": "Reinforcement Learning", "ml_task": "RL Agent Training" } }
+      ]
+    },
+
+    "C3_dl_cv": {
+      "id": "C3_dl_cv",
+      "phase": "BRANCH C — Computer Vision Task",
+      "question": "Computer Vision. What is the model actually DOING with the images?",
+      "options": [
+        { "label": "🏷️  Image classification — label this image. Cat or not cat.", "value": "img_class", "next": "C4_stack_dl", "collects": { "ml_task": "Image Classification" } },
+        { "label": "📦  Object detection — find and box every object in the scene", "value": "obj_detect", "next": "C4_stack_dl", "collects": { "ml_task": "Object Detection" } },
+        { "label": "🎭  Segmentation — pixel-perfect region labeling, every pixel gets a class", "value": "segment", "next": "C4_stack_dl", "collects": { "ml_task": "Image Segmentation" } },
+        { "label": "✨  Image generation / style transfer — creates or transforms images", "value": "img_gen", "next": "C4_stack_dl", "collects": { "ml_task": "Image Generation / Style Transfer" } }
+      ]
+    },
+
+    "C3_dl_nlp": {
+      "id": "C3_dl_nlp",
+      "phase": "BRANCH C — NLP Task",
+      "question": "NLP deep learning. What's the transformer doing?",
+      "options": [
+        { "label": "😊  Sentiment analysis / text classification — labeling opinions or categories", "value": "sentiment", "next": "C4_stack_dl", "collects": { "ml_task": "Sentiment Analysis / Text Classification" } },
+        { "label": "✍️  Text generation — generates new text, completions, creative writing", "value": "text_gen", "next": "C4_stack_dl", "collects": { "ml_task": "Text Generation" } },
+        { "label": "🔍  Information extraction — pulls entities, relationships, facts from text", "value": "ner", "next": "C4_stack_dl", "collects": { "ml_task": "Named Entity Recognition / Information Extraction" } },
+        { "label": "🌐  Translation / summarization — converts text from one form to another", "value": "translation", "next": "C4_stack_dl", "collects": { "ml_task": "Translation / Summarization" } }
+      ]
+    },
+
+    "C3_dl_audio": {
+      "id": "C3_dl_audio",
+      "phase": "BRANCH C — Audio Task",
+      "question": "Audio ML. What specifically is the model doing with the sound?",
+      "options": [
+        { "label": "🎤  Speech-to-text / ASR — converts spoken words to readable text", "value": "stt", "next": "C4_stack_dl", "collects": { "ml_task": "Speech-to-Text / ASR" } },
+        { "label": "🎵  Music generation or classification — creates or categorizes audio", "value": "music", "next": "C4_stack_dl", "collects": { "ml_task": "Music Generation / Audio Classification" } },
+        { "label": "🔊  Sound event detection — identifies events in ambient audio (alarm, cough, etc.)", "value": "sound_detect", "next": "C4_stack_dl", "collects": { "ml_task": "Sound Event Detection" } }
+      ]
+    },
+
+    "C4_stack_dl": {
+      "id": "C4_stack_dl",
+      "phase": "BRANCH C — DL Framework",
+      "question": "Deep learning framework — the one you actually ran the training loop in?",
+      "options": [
+        { "label": "🔥  PyTorch — dynamic graph, research-first, most papers implement in this", "value": "pytorch", "next": "C8_prediction_storage", "collects": { "ml_framework": "PyTorch" } },
+        { "label": "🧪  TensorFlow / Keras — static graph, production-first, tf.function hell included", "value": "tensorflow", "next": "C8_prediction_storage", "collects": { "ml_framework": "TensorFlow / Keras" } },
+        { "label": "🤗  HuggingFace Transformers — you used a pre-trained model and added a head, valid approach", "value": "huggingface", "next": "C8_prediction_storage", "collects": { "ml_framework": "HuggingFace Transformers" } },
+        { "label": "🔢  JAX / Flax — you need XLA compilation and your loss function has custom gradients", "value": "jax", "next": "C8_prediction_storage", "collects": { "ml_framework": "JAX / Flax" } }
+      ]
+    },
+
+    "C2_llm": {
+      "id": "C2_llm",
+      "phase": "BRANCH C — LLM / GenAI",
+      "question": "LLM / GenAI project. What flavor of LLM work is this?",
+      "options": [
+        { "label": "🔗  RAG system — Retrieval-Augmented Generation, your LLM has a knowledge base", "value": "rag", "next": "C3_llm_rag", "collects": { "llm_type": "RAG (Retrieval-Augmented Generation)", "problem": "Builds a RAG system to give an LLM accurate, grounded, up-to-date knowledge from a custom document corpus" } },
+        { "label": "🤖  AI Agent — tool-calling, autonomous task execution, it makes decisions", "value": "agent", "next": "C3_llm_agent", "collects": { "llm_type": "AI Agent (Tool-Calling / Autonomous)", "problem": "Implements an AI agent capable of using tools and autonomously completing multi-step tasks" } },
+        { "label": "🔧  Fine-tuned model — you took a base model and trained it on your own data", "value": "finetune", "next": "C3_llm_ft", "collects": { "llm_type": "Fine-Tuned LLM", "problem": "Fine-tunes a pre-trained language model on domain-specific data for specialized task performance" } },
+        { "label": "💬  LLM-powered app / chatbot — a product built on top of an API (OpenAI, Gemini, Claude)", "value": "llm_app", "next": "C3_llm_app", "collects": { "llm_type": "LLM-Powered Application / Chatbot", "problem": "Builds a user-facing application or chatbot powered by a large language model API" } }
+      ]
+    },
+
+    "C3_llm_rag": {
+      "id": "C3_llm_rag",
+      "phase": "BRANCH C — RAG Corpus",
+      "question": "RAG system. What's the document corpus it's grounded in?",
+      "options": [
+        { "label": "📚  PDFs / docs — internal knowledge base, company documents, research papers", "value": "docs", "next": "C3b_vector_db", "collects": { "rag_source": "PDF / Document Corpus" } },
+        { "label": "🌐  Web content / crawled pages — it indexes and queries scraped web data", "value": "web", "next": "C3b_vector_db", "collects": { "rag_source": "Crawled Web Content" } },
+        { "label": "💾  Database / structured data — queries a SQL or vector DB to ground responses", "value": "database", "next": "C3b_vector_db", "collects": { "rag_source": "Database / Structured Data" } },
+        { "label": "📝  Codebase — it RAGs over source code for a coding assistant use case", "value": "codebase", "next": "C3b_vector_db", "collects": { "rag_source": "Source Code / Codebase" } }
+      ]
+    },
+
+    "C3b_vector_db": {
+      "id": "C3b_vector_db",
+      "phase": "BRANCH C — Vector Database",
+      "question": "Your RAG needs somewhere to store embeddings. What Vector Database are you using to stash those high-dimensional vibes?",
+      "options": [
+        { "label": "🌲  Pinecone — fully managed, fast, and you paid for the convenience (fair)", "value": "pinecone", "next": "C4_llm_stack", "collects": { "tech_stack": "Pinecone (Managed Vector Database)", "experimental_detail": "Pinecone used as the managed vector store for embedding similarity search in RAG pipeline" } },
+        { "label": "🎨  Chroma — open-source, runs locally or self-hosted, the developer's first vector DB", "value": "chroma", "next": "C4_llm_stack", "collects": { "tech_stack": "ChromaDB (Open-Source Vector Database)", "experimental_detail": "ChromaDB used for local/self-hosted vector embedding storage and retrieval" } },
+        { "label": "🌀  Milvus / Weaviate / Qdrant — open-source but production-grade, you deployed a vector DB cluster", "value": "milvus", "next": "C4_llm_stack", "collects": { "tech_stack": "Milvus / Weaviate / Qdrant (Production Vector Database)", "experimental_detail": "Production-grade open-source vector database cluster for large-scale embedding retrieval" } },
+        { "label": "🐘  pgvector — vector search inside PostgreSQL, because why add another service", "value": "pgvector", "next": "C4_llm_stack", "collects": { "tech_stack": "pgvector (PostgreSQL Vector Extension)", "experimental_detail": "Vector similarity search implemented directly inside PostgreSQL via the pgvector extension" } },
+        { "label": "🔢  In-memory / FAISS — Facebook's similarity search library, no persistent DB, fast and raw", "value": "faiss", "next": "C4_llm_stack", "collects": { "tech_stack": "FAISS (In-Memory Vector Search)", "experimental_detail": "FAISS used for high-performance in-memory approximate nearest neighbor search" } }
+      ]
+    },
+
+    "C3_llm_agent": {
+      "id": "C3_llm_agent",
+      "phase": "BRANCH C — Agent Tools",
+      "question": "AI Agent. What tools can it actually use to get things done?",
+      "options": [
+        { "label": "🌐  Web search / browsing — it Googles things and reads pages autonomously", "value": "web_search", "next": "C4_llm_stack", "collects": { "agent_tools": "Web Search / Browser Tools" } },
+        { "label": "💻  Code execution — it writes and runs code to solve problems", "value": "code_exec", "next": "C4_llm_stack", "collects": { "agent_tools": "Code Interpreter / Execution Tools" } },
+        { "label": "🔌  External APIs — it calls real services (calendar, email, databases, etc.)", "value": "api_tools", "next": "C4_llm_stack", "collects": { "agent_tools": "External API / Service Integration Tools" } },
+        { "label": "🧩  Custom function tools — domain-specific tools you defined for it", "value": "custom_tools", "next": "C4_llm_stack", "collects": { "agent_tools": "Custom Function Tools (Domain-Specific)" } }
+      ]
+    },
+
+    "C3_llm_ft": {
+      "id": "C3_llm_ft",
+      "phase": "BRANCH C — Fine-tuning Technique",
+      "question": "Fine-tuning. What technique did you use to actually update the weights?",
+      "options": [
+        { "label": "🔧  LoRA / QLoRA — parameter-efficient, the sensible choice for consumer hardware", "value": "lora", "next": "C4_llm_stack", "collects": { "finetune_method": "LoRA / QLoRA (Parameter-Efficient Fine-Tuning)" } },
+        { "label": "💪  Full fine-tune — all weights, all GPU hours, all electric bill", "value": "full_ft", "next": "C4_llm_stack", "collects": { "finetune_method": "Full Fine-Tuning" } },
+        { "label": "🏋️  RLHF / DPO — you have a reward model and opinions about model alignment", "value": "rlhf", "next": "C4_llm_stack", "collects": { "finetune_method": "RLHF / DPO (Preference Optimization)" } }
+      ]
+    },
+
+    "C3_llm_app": {
+      "id": "C3_llm_app",
+      "phase": "BRANCH C — LLM Provider",
+      "question": "LLM-powered app. Which API is your app actually built on?",
+      "options": [
+        { "label": "🟢  OpenAI (GPT-4o, GPT-4, etc.)", "value": "openai", "next": "C4_llm_stack", "collects": { "llm_provider": "OpenAI API (GPT-4o / GPT-4)" } },
+        { "label": "💎  Google Gemini (Gemini 2.5, etc.)", "value": "gemini", "next": "C4_llm_stack", "collects": { "llm_provider": "Google Gemini API" } },
+        { "label": "🟠  Anthropic Claude", "value": "claude", "next": "C4_llm_stack", "collects": { "llm_provider": "Anthropic Claude API" } },
+        { "label": "🦙  Open-source model — Llama, Mistral, Qwen, run locally or self-hosted", "value": "oss_model", "next": "C4_llm_stack", "collects": { "llm_provider": "Open-Source LLM (Llama / Mistral / Qwen)" } }
+      ]
+    },
+
+    "C4_llm_stack": {
+      "id": "C4_llm_stack",
+      "phase": "BRANCH C — LLM Orchestration",
+      "question": "Did you use an LLM orchestration framework, or are you calling the API raw like a caveman with internet access?",
+      "options": [
+        { "label": "🦜  LangChain — the kitchen-sink LLM framework, has a chain for everything", "value": "langchain", "next": "C8_prediction_storage", "collects": { "llm_framework": "LangChain" } },
+        { "label": "🦙  LlamaIndex — document-focused, excellent for RAG pipelines", "value": "llamaindex", "next": "C8_prediction_storage", "collects": { "llm_framework": "LlamaIndex" } },
+        { "label": "🔗  Raw API calls — no framework, just requests and string formatting", "value": "raw_api", "next": "C8_prediction_storage", "collects": { "llm_framework": "Raw API (No Orchestration Framework)" } },
+        { "label": "🌊  LangGraph / CrewAI / AutoGen — agent orchestration, multi-agent systems", "value": "agent_framework", "next": "C8_prediction_storage", "collects": { "llm_framework": "Agent Framework (LangGraph / CrewAI / AutoGen)" } }
+      ]
+    },
+
+    "C2_data": {
+      "id": "C2_data",
+      "phase": "BRANCH C — Data Analysis Goal",
+      "question": "Data analysis / visualization project. What story are you trying to tell with the data?",
+      "options": [
+        { "label": "📈  Trend analysis — how things changed over time, the classic 'and then it went up' narrative", "value": "trends", "next": "C4_stack_data", "collects": { "analysis_type": "Trend / Time-Series Analysis", "problem": "Analyzes historical data to uncover trends, patterns, and changes over time" } },
+        { "label": "🔬  Exploratory analysis (EDA) — you're figuring out what the data IS before deciding what to do with it", "value": "eda", "next": "C4_stack_data", "collects": { "analysis_type": "Exploratory Data Analysis (EDA)", "problem": "Performs exploratory data analysis to surface hidden patterns and generate actionable insights" } },
+        { "label": "📊  Dashboard / reporting — ongoing monitoring, not a one-off analysis", "value": "dashboard", "next": "C4_stack_data", "collects": { "analysis_type": "Dashboard / Ongoing Reporting", "problem": "Builds a live or refreshable dashboard to continuously monitor key metrics and business data" } },
+        { "label": "🤔  Correlation / causality — testing a hypothesis, 'does X actually cause Y'", "value": "correlation", "next": "C4_stack_data", "collects": { "analysis_type": "Correlation / Causal Analysis", "problem": "Tests a data-driven hypothesis to determine relationships and causality between variables" } }
+      ]
+    },
+
+    "C4_stack_data": {
+      "id": "C4_stack_data",
+      "phase": "BRANCH C — Data Stack",
+      "question": "What's the data stack? The tools actually in the notebook?",
+      "options": [
+        { "label": "🐼  pandas + matplotlib / seaborn — the OG data science combo, no shame", "value": "pandas_mpl", "next": "C8_prediction_storage", "collects": { "data_stack": "pandas + matplotlib / seaborn" } },
+        { "label": "📊  Plotly / Dash — interactive charts, hover effects, your stakeholders will be impressed for 5 minutes", "value": "plotly", "next": "C8_prediction_storage", "collects": { "data_stack": "Plotly / Dash (Interactive Visualization)" } },
+        { "label": "📓  Jupyter Notebook — exploratory, iterative, the format is the deliverable", "value": "jupyter", "next": "C8_prediction_storage", "collects": { "data_stack": "Jupyter Notebooks" } },
+        { "label": "🦫  Polars / DuckDB — you've read the benchmarks and pandas is slow, you're right", "value": "polars", "next": "C8_prediction_storage", "collects": { "data_stack": "Polars / DuckDB (Modern Data Stack)" } }
+      ]
+    },
+
+    "C2_pipeline": {
+      "id": "C2_pipeline",
+      "phase": "BRANCH C — Pipeline Source",
+      "question": "Data pipeline / ETL. Where does the data come FROM originally?",
+      "options": [
+        { "label": "🌐  External APIs or web scraping — pulling data from the outside world", "value": "api_source", "next": "C3_pipeline", "collects": { "pipeline_source": "External APIs / Web Scraping" } },
+        { "label": "🗄️  Internal databases — moving data between different data stores", "value": "db_source", "next": "C3_pipeline", "collects": { "pipeline_source": "Internal Databases / Data Warehouses" } },
+        { "label": "📁  Files / flat data — CSVs, JSONs, XMLs, logs sitting on a server somewhere", "value": "file_source", "next": "C3_pipeline", "collects": { "pipeline_source": "Flat Files (CSV / JSON / Logs)" } },
+        { "label": "📡  Event streams — Kafka, Kinesis, real-time events flowing continuously", "value": "stream_source", "next": "C3_pipeline", "collects": { "pipeline_source": "Event Streams (Kafka / Kinesis)" } }
+      ]
+    },
+
+    "C3_pipeline": {
+      "id": "C3_pipeline",
+      "phase": "BRANCH C — Pipeline Orchestration",
+      "question": "Pipeline tools. What are you orchestrating this data flow with?",
+      "options": [
+        { "label": "🌬️  Apache Airflow — DAGs, operators, and a scheduler that will eventually fail on Christmas", "value": "airflow", "next": "C8_prediction_storage", "collects": { "pipeline_tool": "Apache Airflow", "problem": "Builds a data pipeline to automate the ingestion, transformation, and loading of data at scale" } },
+        { "label": "🌊  Prefect / Dagster — modern data orchestration, Airflow but you read the changelog", "value": "prefect", "next": "C8_prediction_storage", "collects": { "pipeline_tool": "Prefect / Dagster", "problem": "Orchestrates a modern data pipeline with observability and retry logic for reliable data delivery" } },
+        { "label": "🐍  Custom Python scripts + cron — no orchestrator, just discipline and crontab", "value": "custom_cron", "next": "C8_prediction_storage", "collects": { "pipeline_tool": "Custom Python + Cron", "problem": "Implements a lightweight ETL pipeline using Python scripts scheduled via cron" } },
+        { "label": "⚡  dbt — SQL transformations, version-controlled, your warehouse is the compute layer", "value": "dbt", "next": "C8_prediction_storage", "collects": { "pipeline_tool": "dbt (Data Build Tool)", "problem": "Transforms raw warehouse data into clean, modeled datasets using dbt for analytics consumption" } }
+      ]
+    },
+
+    "C8_prediction_storage": {
+      "id": "C8_prediction_storage",
+      "phase": "BRANCH C — Prediction / Result Storage",
+      "question": "WHERE do you stash the outputs — predictions, results, embeddings? They need to live somewhere that isn't 'a variable in memory'.",
+      "options": [
+        { "label": "🐘  PostgreSQL / relational DB — predictions saved with timestamps, queryable, normalized", "value": "postgres_storage", "next": "C9_model_deploy", "collects": { "tech_stack": "PostgreSQL (Prediction / Result Storage)", "experimental_detail": "Model outputs and predictions stored with full metadata in a relational database" } },
+        { "label": "🍃  MongoDB / NoSQL — flexible schema for storing varied prediction objects and metadata", "value": "mongo_storage", "next": "C9_model_deploy", "collects": { "tech_stack": "MongoDB / NoSQL (Prediction Storage)", "experimental_detail": "Flexible document store used to persist model predictions and associated feature metadata" } },
+        { "label": "🗂️  Data warehouse — BigQuery, Snowflake, Redshift. Results go into the analytics layer.", "value": "warehouse", "next": "C9_model_deploy", "collects": { "tech_stack": "Data Warehouse (BigQuery / Snowflake / Redshift)", "experimental_detail": "Predictions shipped to a cloud data warehouse for downstream analytics and BI reporting" } },
+        { "label": "📁  Files / object storage — S3, GCS, or local disk. JSON/parquet files, one per batch.", "value": "file_storage", "next": "C9_model_deploy", "collects": { "tech_stack": "Object Storage / File System (S3 / GCS / Local Disk)", "experimental_detail": "Batch prediction outputs stored as parquet or JSON files in object storage" } },
+        { "label": "🧘  No persistent storage — results returned in real-time, stateless, nothing is saved", "value": "no_storage", "next": "C9_model_deploy", "collects": { "tech_stack": "Stateless Inference (No Result Persistence)", "experimental_detail": "Model predictions returned in real-time via API without persistent storage" } }
+      ]
+    },
+
+    "C9_model_deploy": {
+      "id": "C9_model_deploy",
+      "phase": "BRANCH C — Model Deployment Strategy",
+      "question": "How is the model actually DEPLOYED for inference? How does someone call it? Because 'python predict.py' is not a production strategy.",
+      "options": [
+        { "label": "🚀  REST API endpoint — FastAPI / Flask wrapping the model, HTTP POST gets you a prediction", "value": "rest_api", "next": "C10_serving", "collects": { "tech_stack": "REST API Inference Server (FastAPI / Flask + Model)", "experimental_detail": "Model served behind a REST API endpoint for synchronous real-time predictions" } },
+        { "label": "🐳  Containerized API — Docker image with model baked in, deployed on cloud or VPS", "value": "containerized", "next": "C10_serving", "collects": { "tech_stack": "Containerized Model Serving (Docker + Inference API)", "experimental_detail": "Model packaged in a Docker container for portable, reproducible inference deployment" } },
+        { "label": "☁️  Serverless inference — AWS Lambda, Google Cloud Run, Modal.com. Pay-per-call model serving.", "value": "serverless", "next": "C10_serving", "collects": { "tech_stack": "Serverless Inference (Lambda / Cloud Run / Modal)", "experimental_detail": "Model deployed on serverless infrastructure for cost-efficient on-demand inference" } },
+        { "label": "⚡  Edge / ONNX / TFLite — model quantized and runs on-device or at the edge, no server needed", "value": "edge", "next": "C10_serving", "collects": { "tech_stack": "Edge Inference (ONNX / TFLite / on-device)", "experimental_detail": "Model optimized and quantized for edge deployment, enabling on-device inference without cloud dependency" } },
+        { "label": "🤗  HuggingFace Spaces / Replicate — platform hosts the model, you just have a link", "value": "hf_spaces", "next": "C10_serving", "collects": { "tech_stack": "Model Hosting Platform (HuggingFace Spaces / Replicate)", "experimental_detail": "Model served via a managed ML hosting platform with public-facing demo endpoint" } },
+        { "label": "📓  Notebook / script only — no deployment yet, it runs when you run it and that's it", "value": "notebook_only", "next": "C10_serving", "collects": { "tech_stack": "Notebook / Script Execution (No Production Deployment)", "experimental_detail": "Model runs locally as a script or notebook, not deployed as a persistent service" } }
+      ]
+    },
+
+    "C10_serving": {
+      "id": "C10_serving",
+      "phase": "BRANCH C — How Results Are Shared",
+      "question": "Last question. How does someone actually ACCESS or USE the output of this project?",
+      "options": [
+        { "label": "🌐  A web app or API wraps it — there's a UI or endpoint someone can hit", "value": "web_app", "next": "C_END", "collects": { "serving": "Web Application / API Endpoint" } },
+        { "label": "🤗  HuggingFace Spaces or Streamlit — deployed demo, shareable link, public-facing", "value": "hf_streamlit", "next": "C_END", "collects": { "serving": "HuggingFace Spaces / Streamlit Demo" } },
+        { "label": "📓  A notebook — you clone it, run the cells, see the output", "value": "notebook", "next": "C_END", "collects": { "serving": "Jupyter Notebook (Run Locally)" } },
+        { "label": "📦  A published package / library — pip install and import it", "value": "package", "next": "C_END", "collects": { "serving": "Published Python Package (pip installable)" } },
+        { "label": "📊  A static report or dashboard export — PDF, HTML, or hosted chart", "value": "report", "next": "C_END", "collects": { "serving": "Static Report / Exported Dashboard" } }
+      ]
+    },
+
+    "C_END": {
+      "id": "C_END",
+      "phase": "END",
+      "type": "terminal",
+      "developer_title": "THE MODEL WHISPERER 🤖",
+      "message": "Model fully interrogated — vector DB, deployment strategy, prediction storage, the works. Your README will make the training loss curve look intentional and your architecture look like it was designed sober.",
+      "payload_note": "Aggregate all collects into category, problem, tech_stack, and experimental_detail keys."
+    },
+
+    "D1": {
+      "id": "D1",
+      "phase": "BRANCH D — Hardware / IoT",
+      "question": "Hardware spotted. There are physical objects involved. Let's assess the damage. What's the main compute platform?",
+      "options": [
+        { "label": "🍓  Raspberry Pi — Linux on a credit card, the gateway drug to embedded development", "value": "rpi", "next": "D2", "collects": { "hardware_platform": "Raspberry Pi", "experimental_detail": "Linux-based Single Board Computer (Raspberry Pi)" } },
+        { "label": "⚡  Arduino (classic) — C/C++, no OS, every byte counts, you are the OS", "value": "arduino", "next": "D2", "collects": { "hardware_platform": "Arduino", "experimental_detail": "Arduino Microcontroller (C/C++, Bare Metal)" } },
+        { "label": "📡  ESP32 / ESP8266 — Arduino but with WiFi and BLE baked in, IoT's favorite chip", "value": "esp", "next": "D2", "collects": { "hardware_platform": "ESP32 / ESP8266", "experimental_detail": "ESP32/ESP8266 WiFi Microcontroller" } },
+        { "label": "🤖  Specialized hardware — Jetson Nano, FPGA, custom PCB, something that requires a datasheet", "value": "specialized", "next": "D2", "collects": { "hardware_platform": "Specialized Hardware (Jetson / FPGA / Custom PCB)", "experimental_detail": "Specialized Embedded Hardware Platform" } },
+        { "label": "🧩  Multiple boards in a system — a Raspberry Pi bossing around some Arduinos, orchestrated chaos", "value": "multi_board", "next": "D2", "collects": { "hardware_platform": "Multi-Board System", "experimental_detail": "Distributed Multi-Board Hardware Architecture" } }
+      ]
+    },
+
+    "D2": {
+      "id": "D2",
+      "phase": "BRANCH D — Sensors / Inputs",
+      "question": "What does your hardware actually SENSE or RECEIVE from the physical world?",
+      "options": [
+        { "label": "🌡️  Environmental data — temperature, humidity, air quality, atmospheric things", "value": "environmental", "next": "D3", "collects": { "sensors": "Environmental Sensors (Temperature / Humidity / Air Quality)" } },
+        { "label": "👁️  Visual input — camera, image capture, computer vision on the edge", "value": "camera", "next": "D3", "collects": { "sensors": "Camera / Visual Input (Edge Vision)" } },
+        { "label": "📍  Motion / Position — accelerometers, gyroscopes, GPS, it knows where it is", "value": "motion", "next": "D3", "collects": { "sensors": "Motion / Position Sensors (Accelerometer / GPS)" } },
+        { "label": "🔌  Digital / analog signals — buttons, switches, voltage levels, PWM from other components", "value": "digital_signals", "next": "D3", "collects": { "sensors": "Digital / Analog Signal Inputs" } },
+        { "label": "📡  Radio / wireless data — RFID, NFC, LoRa, it reads signals from the air", "value": "radio", "next": "D3", "collects": { "sensors": "Radio / Wireless Signal Reception (RFID / NFC / LoRa)" } },
+        { "label": "👂  No sensors — it only outputs, it doesn't read the world", "value": "no_sensors", "next": "D3", "collects": { "sensors": "Output Only (No Sensor Input)" } }
+      ]
+    },
+
+    "D3": {
+      "id": "D3",
+      "phase": "BRANCH D — Actuators / Outputs",
+      "question": "What does your hardware actually DO or CONTROL in the physical world?",
+      "options": [
+        { "label": "💡  Lights / LEDs — blinks, glows, changes color, RGB everything because why not", "value": "leds", "next": "D4", "collects": { "actuators": "LED / Light Control" } },
+        { "label": "🦾  Motors / servos / actuators — things MOVE because of this project", "value": "motors", "next": "D4", "collects": { "actuators": "Motors / Servos / Mechanical Actuators" } },
+        { "label": "🖥️  Display / screen output — LCD, OLED, e-ink, it shows information", "value": "display", "next": "D4", "collects": { "actuators": "Display / Screen Output" } },
+        { "label": "🔊  Audio output — speakers, buzzers, it makes sounds", "value": "audio", "next": "D4", "collects": { "actuators": "Audio / Speaker Output" } },
+        { "label": "🔋  Relay / switch control — turns mains-powered things on and off (spicy)", "value": "relay", "next": "D4", "collects": { "actuators": "Relay / Mains Power Switching" } },
+        { "label": "📊  Data only — it collects and transmits, no physical actuation", "value": "data_only", "next": "D4", "collects": { "actuators": "Data Collection Only (No Physical Actuation)" } }
+      ]
+    },
+
+    "D4": {
+      "id": "D4",
+      "phase": "BRANCH D — Connectivity",
+      "question": "How does this hardware communicate — with the internet, a phone, or another device?",
+      "options": [
+        { "label": "📡  WiFi to the cloud — publishes data to MQTT broker, REST API, or cloud IoT platform", "value": "wifi_cloud", "next": "D5", "collects": { "connectivity": "WiFi → Cloud (MQTT / HTTP)" } },
+        { "label": "🔵  Bluetooth / BLE — pairs with a mobile app or nearby computer", "value": "ble", "next": "D5", "collects": { "connectivity": "Bluetooth / BLE (Mobile / Computer Pairing)" } },
+        { "label": "🔌  USB / Serial — tethered to a PC, talks via serial port, no wireless", "value": "serial", "next": "D5", "collects": { "connectivity": "USB / Serial (Tethered to Computer)" } },
+        { "label": "📻  LoRa / Zigbee / Z-Wave — low-power long-range mesh networking, you have range requirements", "value": "lora", "next": "D5", "collects": { "connectivity": "LoRa / Zigbee / Z-Wave (Low-Power Mesh)" } },
+        { "label": "🏝️  Standalone — no connectivity at all, fully self-contained island", "value": "standalone", "next": "D5", "collects": { "connectivity": "Standalone (No External Connectivity)" } }
+      ]
+    },
+
+    "D5": {
+      "id": "D5",
+      "phase": "BRANCH D — On-Device Software",
+      "question": "What language and software ecosystem is running ON the device?",
+      "options": [
+        { "label": "🐍  Python on Linux (Raspberry Pi) — GPIO, libraries, pip install, the comfortable choice", "value": "python_linux", "next": "D6_power", "collects": { "device_software": "Python (Linux / Raspberry Pi)", "tech_stack": "Python + GPIO / RPi.GPIO" } },
+        { "label": "⚙️  C / C++ (Arduino / ESP) — you write to registers, you know what volatile means", "value": "c_embedded", "next": "D6_power", "collects": { "device_software": "C / C++ (Arduino / ESP-IDF)", "tech_stack": "C/C++ (Embedded / Arduino Framework)" } },
+        { "label": "🕹️  MicroPython / CircuitPython — Python-ish on microcontrollers, training wheels that actually work", "value": "micropython", "next": "D6_power", "collects": { "device_software": "MicroPython / CircuitPython", "tech_stack": "MicroPython / CircuitPython" } },
+        { "label": "🦀  Rust (embedded) — unsafe is forbidden and your firmware will not panic in production", "value": "rust_embedded", "next": "D6_power", "collects": { "device_software": "Rust (Embedded)", "tech_stack": "Rust (Embedded / no_std)" } }
+      ]
+    },
+
+    "D6_power": {
+      "id": "D6_power",
+      "phase": "BRANCH D — Power Management",
+      "question": "How is your device powered? Because 'I plug it in when I remember' is a valid but concerning architecture.",
+      "options": [
+        { "label": "🔌  Wall plug / mains power — always on, infinite energy, zero drama about battery life", "value": "wall_plug", "next": "D7_ota", "collects": { "power_management": "Mains / Wall Power (Always-On)", "experimental_detail": "Device powered from mains electricity, no battery management required" } },
+        { "label": "🔋  Battery-powered — Li-ion, LiPo, or AA cells. Sleep modes implemented. Power budget calculated.", "value": "battery", "next": "D7_ota", "collects": { "power_management": "Battery-Powered (Li-ion / LiPo with Sleep Modes)", "experimental_detail": "Battery-powered device with power budget optimization and deep sleep modes for extended runtime" } },
+        { "label": "☀️  Solar / energy harvesting — self-sustaining, charges during the day, runs at night, nature is the charger", "value": "solar", "next": "D7_ota", "collects": { "power_management": "Solar / Energy Harvesting (Self-Sustaining)", "experimental_detail": "Solar or energy harvesting system enabling off-grid, self-sustaining device operation" } },
+        { "label": "🔋⚡  Battery + PoE hybrid — runs on battery, switches to wall power or Power over Ethernet when available", "value": "hybrid", "next": "D7_ota", "collects": { "power_management": "Hybrid Power (Battery + PoE / Wall Fallback)", "experimental_detail": "Hybrid power management with battery backup and primary wired power source" } },
+        { "label": "🤷  USB from a laptop / power bank — it's powered by whatever's nearby, no planning involved", "value": "usb_adhoc", "next": "D7_ota", "collects": { "power_management": "USB-Powered (Ad-hoc from laptop / power bank)", "experimental_detail": "Device powered via USB, designed for desktop or tethered use scenarios" } }
+      ]
+    },
+
+    "D7_ota": {
+      "id": "D7_ota",
+      "phase": "BRANCH D — Firmware Updates",
+      "question": "How do you UPDATE the firmware or software when you push a fix? Or is physical access to the device the only deployment strategy you've got?",
+      "options": [
+        { "label": "📡  OTA (Over-The-Air) updates — firmware updates delivered wirelessly, you push, it receives", "value": "ota", "next": "D8_dashboard", "collects": { "tech_stack": "OTA Firmware Updates (Over-The-Air)", "experimental_detail": "Wireless OTA firmware update mechanism for remote deployment without physical access" } },
+        { "label": "🔌  USB / Serial flash — physically connect, run avrdude or esptool, flash new firmware", "value": "usb_flash", "next": "D8_dashboard", "collects": { "tech_stack": "USB / Serial Firmware Flashing (avrdude / esptool)", "experimental_detail": "Firmware deployed via physical USB/serial connection and flashing tool" } },
+        { "label": "🐍  SSH + git pull — it's Linux, you SSH in and update the Python script like a server", "value": "ssh_update", "next": "D8_dashboard", "collects": { "tech_stack": "SSH + Git Pull (Linux-based Remote Update)", "experimental_detail": "Software updated remotely via SSH, git pull, and service restart on Linux-based hardware" } },
+        { "label": "📦  SD card swap — pull the card, flash a new image, reinsert. Low-tech, full control.", "value": "sd_swap", "next": "D8_dashboard", "collects": { "tech_stack": "SD Card Swap (Manual Image Flashing)", "experimental_detail": "Firmware updated by physically re-flashing the SD card with a new OS or software image" } },
+        { "label": "🔮  No update mechanism — version 1 is the only version. Change-averse device.", "value": "no_update", "next": "D8_dashboard", "collects": { "tech_stack": "No Update Mechanism (Fixed Firmware Version)", "experimental_detail": "Device runs fixed firmware with no update pathway — deployed once and left running" } }
+      ]
+    },
+
+    "D8_dashboard": {
+      "id": "D8_dashboard",
+      "phase": "BRANCH D — Frontend Dashboard",
+      "question": "Does your hardware project have a FRONTEND DASHBOARD or monitoring UI — somewhere humans look at the data it collects?",
+      "options": [
+        { "label": "📊  Yes — I built a custom web dashboard (Flask, Node.js, React, etc.)", "value": "custom_dashboard", "next": "D9_data_retention", "collects": { "tech_stack": "Custom Web Dashboard (Frontend Monitoring UI)", "experimental_detail": "Custom-built web dashboard for real-time visualization and control of hardware data" } },
+        { "label": "🏭  Yes — Grafana / InfluxDB / Prometheus dashboard — time-series metrics visualization", "value": "grafana", "next": "D9_data_retention", "collects": { "tech_stack": "Grafana + InfluxDB / Prometheus (Time-Series Dashboard)", "experimental_detail": "Grafana dashboard connected to a time-series database for hardware telemetry visualization" } },
+        { "label": "📱  Yes — mobile app (native or PWA) — data viewable on phone", "value": "mobile_dash", "next": "D9_data_retention", "collects": { "tech_stack": "Mobile App Dashboard (Native / PWA)", "experimental_detail": "Mobile application providing remote monitoring and control interface for hardware system" } },
+        { "label": "🏠  Third-party IoT platform — Home Assistant, ThingSpeak, Blynk, Adafruit IO", "value": "iot_platform", "next": "D9_data_retention", "collects": { "tech_stack": "IoT Platform Dashboard (Home Assistant / ThingSpeak / Blynk)", "experimental_detail": "Data visualized and controlled via a managed IoT platform dashboard" } },
+        { "label": "🖥️  Hardware display only — OLED or LCD on the device is the only UI", "value": "hw_display_only", "next": "D9_data_retention", "collects": { "tech_stack": "On-Device Display (No Remote Dashboard)", "experimental_detail": "User interface limited to on-device display (OLED/LCD), no remote dashboard deployed" } },
+        { "label": "🙈  No dashboard — data goes into the void (or a log file you'll read someday)", "value": "no_dashboard", "next": "D9_data_retention", "collects": { "tech_stack": "No Dashboard (Headless / Logging Only)", "experimental_detail": "Headless device with no visualization layer — outputs to logs or serial monitor only" } }
+      ]
+    },
+
+    "D9_data_retention": {
+      "id": "D9_data_retention",
+      "phase": "BRANCH D — Data Storage & Retention",
+      "question": "Where does the sensor data or device telemetry actually LIVE long-term? Or does it evaporate into the ether?",
+      "options": [
+        { "label": "🕰️  InfluxDB / TimescaleDB — purpose-built time-series database, built for sensor data at scale", "value": "timeseries_db", "next": "D10_problem", "collects": { "tech_stack": "Time-Series Database (InfluxDB / TimescaleDB)", "experimental_detail": "Sensor telemetry stored in a time-series database optimized for temporal data queries" } },
+        { "label": "🐘  PostgreSQL / SQLite — relational DB, structured readings with timestamps and metadata", "value": "relational_db", "next": "D10_problem", "collects": { "tech_stack": "Relational Database (PostgreSQL / SQLite for telemetry)", "experimental_detail": "Sensor data persisted in a relational database for structured querying and reporting" } },
+        { "label": "☁️  Cloud IoT storage — AWS IoT Core, Google Cloud IoT, Azure IoT Hub data lake", "value": "cloud_iot", "next": "D10_problem", "collects": { "tech_stack": "Cloud IoT Data Storage (AWS IoT / GCP IoT / Azure IoT Hub)", "experimental_detail": "Device telemetry ingested into a managed cloud IoT platform data pipeline" } },
+        { "label": "📁  Local files / SD card — readings written to CSV or JSON on local storage, synced manually", "value": "local_files", "next": "D10_problem", "collects": { "tech_stack": "Local File Storage (SD Card / CSV / JSON)", "experimental_detail": "Sensor readings stored locally on SD card or filesystem, retrieved via USB or network" } },
+        { "label": "💨  No persistence — real-time only, data is read and acted on immediately, nothing stored", "value": "no_persistence", "next": "D10_problem", "collects": { "tech_stack": "Real-Time Only (No Data Persistence)", "experimental_detail": "Device operates in a pure real-time mode — sensor data processed and acted on without storage" } }
+      ]
+    },
+
+    "D10_problem": {
+      "id": "D10_problem",
+      "phase": "BRANCH D — Problem / Use Case",
+      "question": "Final lock-in. What is the REAL-WORLD problem or use case this hardware project solves?",
+      "options": [
+        { "label": "🏠  Home automation — makes a dumb thing smart so you feel like Tony Stark at home", "value": "home_auto", "next": "D_END", "collects": { "problem": "Automates home systems, turning ordinary devices into smart, remotely controllable hardware" } },
+        { "label": "📊  Environmental monitoring — logs real-world conditions over time for analysis or alerts", "value": "env_monitor", "next": "D_END", "collects": { "problem": "Monitors and logs environmental conditions in real-time, enabling data-driven alerts and analysis" } },
+        { "label": "🤖  Robotics / autonomous movement — something moves and makes decisions on its own", "value": "robotics", "next": "D_END", "collects": { "problem": "Implements robotic movement and autonomous decision-making for a physical agent" } },
+        { "label": "🔐  Physical security / access control — who gets in, who gets an alert, who gets logged", "value": "security", "next": "D_END", "collects": { "problem": "Controls physical access and monitors security events using hardware-based detection and logging" } },
+        { "label": "🧪  Pure experimentation — no formal use case, this is a learning build or proof-of-concept", "value": "experiment", "next": "D_END", "collects": { "problem": "Serves as an experimental hardware prototype to explore embedded concepts and IoT architecture" } }
+      ]
+    },
+
+    "D_END": {
+      "id": "D_END",
+      "phase": "END",
+      "type": "terminal",
+      "developer_title": "THE FRANKENSTEIN ENGINEER 🔩",
+      "message": "Hardware fully profiled — power, firmware, telemetry, dashboard, the whole wired saga. Your README will make the soldering look intentional and the sensor data look curated.",
+      "payload_note": "Aggregate all collects into category, problem, tech_stack, and experimental_detail keys."
+    },
+
+    "E1": {
+      "id": "E1",
+      "phase": "BRANCH E — Creative / Generative",
+      "question": "Creative / Generative project. Art that runs on electricity. What's the primary MEDIUM?",
+      "options": [
+        { "label": "🌐  Browser-based — WebGL, Canvas, CSS animations, Three.js, it runs in a tab", "value": "browser", "next": "E2_browser", "collects": { "creative_medium": "Browser-Based (WebGL / Canvas / CSS)" } },
+        { "label": "🖼️  Generated images or video — the OUTPUT is files, not an interactive experience", "value": "generated_files", "next": "E2_files", "collects": { "creative_medium": "Generated Image / Video Output" } },
+        { "label": "🎵  Audio / music — generative sound, visualizers, synthesizers, the ears have it", "value": "audio", "next": "E2_audio", "collects": { "creative_medium": "Generative Audio / Music" } },
+        { "label": "📱  Installation or mixed reality — physical + digital, projection mapping, spatial computing", "value": "installation", "next": "E2_install", "collects": { "creative_medium": "Physical Installation / Mixed Reality" } }
+      ]
+    },
+
+    "E2_browser": {
+      "id": "E2_browser",
+      "phase": "BRANCH E — Browser Creative Engine",
+      "question": "Browser-based creative work. What's driving the visuals technically?",
+      "options": [
+        { "label": "🎲  Algorithmic / procedural — math, noise functions, fractals, rules generating beauty", "value": "procedural", "next": "E3_browser", "collects": { "generation_engine": "Procedural / Algorithmic (Noise, Fractals, L-Systems)" } },
+        { "label": "🕹️  User-interactive — responds to mouse, keyboard, touch, the user IS the input", "value": "interactive", "next": "E3_browser", "collects": { "generation_engine": "User-Interactive (Mouse / Touch Driven)" } },
+        { "label": "🌐  3D / WebGL — three-dimensional geometry, shaders, lighting, depth in the browser", "value": "webgl_3d", "next": "E3_browser", "collects": { "generation_engine": "3D / WebGL (Shaders, 3D Geometry)" } },
+        { "label": "🤖  AI-driven — a model runs in the browser (TensorFlow.js, ONNX) and drives the visuals", "value": "ai_browser", "next": "E3_browser", "collects": { "generation_engine": "AI-Driven (Browser-Side ML Model)" } }
+      ]
+    },
+
+    "E3_browser": {
+      "id": "E3_browser",
+      "phase": "BRANCH E — Browser Library",
+      "question": "Browser creative stack. What library or API is doing the actual rendering heavy lifting?",
+      "options": [
+        { "label": "🌐  Three.js — 3D in the browser, WebGL abstracted to something manageable", "value": "threejs", "next": "E4_realtime", "collects": { "creative_stack": "Three.js (3D WebGL)" } },
+        { "label": "🎨  p5.js — Processing for the web, sketch-first, artist-friendly API", "value": "p5js", "next": "E4_realtime", "collects": { "creative_stack": "p5.js (Processing / Canvas)" } },
+        { "label": "📊  D3.js — data visualization library used as a creative tool, SVG manipulation", "value": "d3", "next": "E4_realtime", "collects": { "creative_stack": "D3.js (Data-Driven DOM / SVG)" } },
+        { "label": "🖼️  Raw Canvas API / WebGL — no abstraction, pure browser API, maximum control", "value": "raw_canvas", "next": "E4_realtime", "collects": { "creative_stack": "Raw Canvas API / WebGL (No Library)" } },
+        { "label": "💅  CSS animations / SVG — no JS canvas, just CSS keyframes and SVG morphing taken too far", "value": "css_svg", "next": "E4_realtime", "collects": { "creative_stack": "CSS Animations / SVG (No Canvas)" } }
+      ]
+    },
+
+    "E2_files": {
+      "id": "E2_files",
+      "phase": "BRANCH E — Generated File Engine",
+      "question": "Generated image/video output. What's the generative engine or method?",
+      "options": [
+        { "label": "🤖  Diffusion model — Stable Diffusion, DALL-E, Midjourney pipeline, latent space tourism", "value": "diffusion", "next": "E4_realtime", "collects": { "generation_engine": "Diffusion Model (Stable Diffusion / DALL-E)", "creative_stack": "Diffusion Model Pipeline (Python / diffusers)" } },
+        { "label": "🧬  GAN — Generative Adversarial Network, you trained a generator and discriminator", "value": "gan", "next": "E4_realtime", "collects": { "generation_engine": "GAN (Generative Adversarial Network)", "creative_stack": "PyTorch / TensorFlow (GAN Training)" } },
+        { "label": "🐍  Python script — PIL, OpenCV, matplotlib, programmatically drawing every pixel", "value": "python_script", "next": "E4_realtime", "collects": { "generation_engine": "Programmatic (Python + PIL / OpenCV / matplotlib)", "creative_stack": "Python (PIL / OpenCV / matplotlib)" } },
+        { "label": "🎬  Code-driven animation — Manim, Remotion, Blender-Python, frames rendered from code", "value": "code_animation", "next": "E4_realtime", "collects": { "generation_engine": "Code-Driven Animation (Manim / Remotion / Blender Python)", "creative_stack": "Manim / Remotion / Blender Python" } }
+      ]
+    },
+
+    "E2_audio": {
+      "id": "E2_audio",
+      "phase": "BRANCH E — Audio Stack",
+      "question": "Generative audio / music. What tech stack is making the sounds?",
+      "options": [
+        { "label": "🎹  Tone.js / Web Audio API — synthesis in the browser, runs in a tab, no install needed", "value": "tonejs", "next": "E4_realtime", "collects": { "creative_stack": "Tone.js / Web Audio API", "generation_engine": "Browser-Side Audio Synthesis" } },
+        { "label": "🐍  Python + librosa / pydub / soundfile — audio processing and generation in Python", "value": "python_audio", "next": "E4_realtime", "collects": { "creative_stack": "Python (librosa / pydub / soundfile)", "generation_engine": "Python Audio Generation / Processing" } },
+        { "label": "🎛️  SuperCollider / Max/MSP / Pure Data — dedicated audio programming environments", "value": "supercollider", "next": "E4_realtime", "collects": { "creative_stack": "SuperCollider / Max/MSP / Pure Data", "generation_engine": "Dedicated Audio Programming Environment" } },
+        { "label": "🤖  AI music model — MusicGen, AudioCraft, Suno API, the model writes the melody", "value": "ai_music", "next": "E4_realtime", "collects": { "creative_stack": "AI Music Generation Model (MusicGen / AudioCraft)", "generation_engine": "AI-Driven Music Generation" } }
+      ]
+    },
+
+    "E2_install": {
+      "id": "E2_install",
+      "phase": "BRANCH E — Installation Stack",
+      "question": "Physical installation / mixed reality. What tech is bridging the physical and digital?",
+      "options": [
+        { "label": "📽️  Projection mapping — software projecting visuals onto physical surfaces (TouchDesigner, Resolume)", "value": "projection", "next": "E4_realtime", "collects": { "creative_stack": "TouchDesigner / Resolume (Projection Mapping)", "generation_engine": "Projection Mapping" } },
+        { "label": "🥽  WebXR / AR.js — browser-based AR, no app install required", "value": "webxr", "next": "E4_realtime", "collects": { "creative_stack": "WebXR / AR.js", "generation_engine": "Browser-Based AR / VR" } },
+        { "label": "🎮  Unity / Unreal — game engine used as a creative canvas, not a game", "value": "unity_unreal", "next": "E4_realtime", "collects": { "creative_stack": "Unity / Unreal Engine (Creative Coding)", "generation_engine": "Real-Time Game Engine (Creative Use)" } },
+        { "label": "🔩  Hardware + code — Raspberry Pi / Arduino driving physical outputs with creative intent", "value": "hardware_art", "next": "E4_realtime", "collects": { "creative_stack": "Hardware + Code (Arduino / RPi + Creative Outputs)", "generation_engine": "Hardware-Driven Physical Installation" } }
+      ]
+    },
+
+    "E4_realtime": {
+      "id": "E4_realtime",
+      "phase": "BRANCH E — Real-Time Data Reactivity",
+      "question": "Is your visual or audio work REACTIVE to real-time data or external API streams — or is it self-contained in its own little universe?",
+      "options": [
+        { "label": "📡  Yes — it reacts to live data APIs (weather, finance, social, IoT sensor streams)", "value": "live_api", "next": "E5_performance", "collects": { "tech_stack": "Real-Time API Data Integration (Live External Data Stream)", "experimental_detail": "Visual / audio work responds to live external API data, creating dynamic, data-driven generative outputs" } },
+        { "label": "🎙️  Yes — it reacts to live audio input — microphone, line-in, music, ambient sound", "value": "audio_reactive", "next": "E5_performance", "collects": { "tech_stack": "Audio-Reactive Visuals (Microphone / Line-in Input)", "experimental_detail": "Generative output reacts in real-time to live audio input via Web Audio API or audio processing" } },
+        { "label": "👆  Yes — it reacts to user input — mouse, touch, keyboard, webcam, gesture", "value": "user_reactive", "next": "E5_performance", "collects": { "tech_stack": "User-Input Reactive (Mouse / Touch / Webcam / Gesture)", "experimental_detail": "Visual experience driven by real-time user interaction via pointer, touch, or computer vision input" } },
+        { "label": "🏝️  No — fully self-contained — runs on its own generative logic, no external data", "value": "self_contained", "next": "E5_performance", "collects": { "tech_stack": "Self-Contained Generative System (No External Data Dependency)", "experimental_detail": "Autonomous generative system operating on internal algorithms and rules without external input" } }
+      ]
+    },
+
+    "E5_performance": {
+      "id": "E5_performance",
+      "phase": "BRANCH E — Performance Optimization",
+      "question": "Did you have to OPTIMIZE for performance? Or does your art run at 12fps and you called it 'impressionistic'?",
+      "options": [
+        { "label": "🎨  Shader optimization — GLSL shaders hand-tuned, fragment vs vertex split considered, you live in the GPU", "value": "shader_opt", "next": "E6_interactivity", "collects": { "tech_stack": "WebGL Shader Optimization (GLSL)", "experimental_detail": "Manual GLSL shader optimization with careful vertex/fragment stage separation for GPU performance" } },
+        { "label": "🗜️  Texture compression + asset pipeline — images compressed (WebP, Basis), atlases batched, draw calls counted", "value": "texture_compression", "next": "E6_interactivity", "collects": { "tech_stack": "Texture Compression + Asset Pipeline (WebP / Basis / Atlases)", "experimental_detail": "Optimized asset pipeline with texture compression and sprite atlasing to reduce GPU memory and draw calls" } },
+        { "label": "🧠  Manual DOM caching — DOM queries cached, paint/layout thrashing avoided, requestAnimationFrame respected", "value": "dom_caching", "next": "E6_interactivity", "collects": { "tech_stack": "DOM Performance Optimization (Query Caching / rAF / Layout Thrash Prevention)", "experimental_detail": "Browser rendering pipeline optimized via DOM reference caching and frame-aligned animation scheduling" } },
+        { "label": "⚡  Web Workers / offscreen canvas — heavy compute offloaded to background threads, main thread stays smooth", "value": "web_workers", "next": "E6_interactivity", "collects": { "tech_stack": "Web Workers + OffscreenCanvas (Multithreaded Browser Rendering)", "experimental_detail": "Compute-intensive generation moved off the main thread via Web Workers and OffscreenCanvas" } },
+        { "label": "🙆  No optimization — vibes first, performance second. The fans spin, the art lives.", "value": "no_opt", "next": "E6_interactivity", "collects": { "tech_stack": "No Performance Optimization (Unoptimized Generative Sketch)", "experimental_detail": "Performance not prioritized — project is a proof-of-concept or exploratory work" } }
+      ]
+    },
+
+    "E6_interactivity": {
+      "id": "E6_interactivity",
+      "phase": "BRANCH E — Interactivity Model",
+      "question": "What's the INTERACTIVITY model — how does a human actually CHANGE what's happening in this piece?",
+      "options": [
+        { "label": "👀  Passive observation — it runs, you watch. No input required. You are the audience.", "value": "passive", "next": "E7_deploy", "collects": { "experimental_detail": "Passive generative experience — audience observes autonomous visual/audio output without interaction" } },
+        { "label": "🖱️  Pointer / touch driven — click, drag, tap changes the output directly and immediately", "value": "pointer", "next": "E7_deploy", "collects": { "experimental_detail": "Direct pointer/touch interaction — user input modulates generative parameters in real-time" } },
+        { "label": "🎛️  Parameter controls / GUI — sliders, knobs, dropdowns to tune the generative system (dat.gui, Tweakpane)", "value": "gui_controls", "next": "E7_deploy", "collects": { "experimental_detail": "GUI-based parameter controls (dat.gui / Tweakpane) for real-time system tuning" } },
+        { "label": "🎤  Voice / audio driven — what the user says or plays changes what happens on screen", "value": "voice_audio", "next": "E7_deploy", "collects": { "experimental_detail": "Audio/voice-driven interaction — spoken or musical input modulates the generative output" } },
+        { "label": "🤝  Multi-user / networked — multiple people interact simultaneously, shared generative space", "value": "multiplayer", "next": "E7_deploy", "collects": { "experimental_detail": "Multi-user networked creative experience — shared generative canvas driven by multiple simultaneous participants" } }
+      ]
+    },
+
+    "E7_deploy": {
+      "id": "E7_deploy",
+      "phase": "BRANCH E — Deployment / Sharing",
+      "question": "How does someone actually EXPERIENCE or ACCESS this work? Where does it live?",
+      "options": [
+        { "label": "🌐  Hosted website — deployed to Vercel, Netlify, GitHub Pages, or a custom domain", "value": "hosted_web", "next": "E8_intent", "collects": { "tech_stack": "Deployed Web Experience (Vercel / Netlify / GitHub Pages)", "experimental_detail": "Creative work hosted as a live, publicly accessible web experience" } },
+        { "label": "📦  GitHub repo only — open source, clone and run locally, no hosted demo", "value": "github_only", "next": "E8_intent", "collects": { "tech_stack": "Open Source (GitHub Repo, Run Locally)", "experimental_detail": "Project distributed as open-source code for local execution — no hosted demo" } },
+        { "label": "🖥️  Physical installation — it runs on a dedicated machine at an event, gallery, or space", "value": "physical_install", "next": "E8_intent", "collects": { "tech_stack": "Physical Installation (Dedicated Hardware, In-Situ)", "experimental_detail": "Artwork experienced in a specific physical context on dedicated display hardware" } },
+        { "label": "🎬  Rendered / exported — the OUTPUT is shared (video, image files), not the interactive system", "value": "exported", "next": "E8_intent", "collects": { "tech_stack": "Exported Media (Video / Image Output Shared)", "experimental_detail": "Generative system renders offline output (video or images) shared as a final artifact, not as an interactive demo" } }
+      ]
+    },
+
+    "E8_intent": {
+      "id": "E8_intent",
+      "phase": "BRANCH E — Intended Experience",
+      "question": "What should someone FEEL or DO when they encounter this project?",
+      "options": [
+        { "label": "😮  Awe — this should look impossible, deeply beautiful, or 'how did they do that'", "value": "awe", "next": "E9_problem", "collects": { "intended_experience": "Visual Awe / Spectacle — showcasing technical artistry and emergent beauty" } },
+        { "label": "🤯  Curiosity + exploration — users should poke at it, try things, discover behaviors", "value": "curiosity", "next": "E9_problem", "collects": { "intended_experience": "Interactive Curiosity — invites exploration and emergent discovery through interaction" } },
+        { "label": "😌  Calm + ambience — meditative, background, slow, designed to be felt not studied", "value": "calm", "next": "E9_problem", "collects": { "intended_experience": "Ambient / Meditative — creates a calming, atmospheric, or contemplative visual environment" } },
+        { "label": "🎯  Functional aesthetics — it IS a tool, the art serves a real purpose", "value": "functional", "next": "E9_problem", "collects": { "intended_experience": "Functional Aesthetics — design and art serve a concrete tool or utility purpose" } }
+      ]
+    },
+
+    "E9_problem": {
+      "id": "E9_problem",
+      "phase": "BRANCH E — Concept / Statement",
+      "question": "Last question. Is there a concept, theme, or statement this project is expressing — or is it purely technical exploration?",
+      "options": [
+        { "label": "💭  It's a concept or statement — there's a theme, an idea, something to communicate", "value": "concept", "next": "E_END", "collects": { "problem": "Expresses a specific artistic concept or statement through generative / interactive visual or audio experience" } },
+        { "label": "🧪  It's technical exploration — the subject IS the technology, I wanted to learn / push limits", "value": "exploration", "next": "E_END", "collects": { "problem": "Explores the technical and aesthetic boundaries of a specific creative coding technology or medium" } },
+        { "label": "🎲  It's systems design — I defined rules and the output emerges from them, emergent complexity", "value": "systems", "next": "E_END", "collects": { "problem": "Demonstrates emergent complexity through carefully designed rules and systems that produce unexpected beauty" } },
+        { "label": "😂  Honestly? I just thought it would look cool. Zero pretension.", "value": "cool", "next": "E_END", "collects": { "problem": "A self-directed creative experiment built purely because it looked cool — and that's a valid reason." } }
+      ]
+    },
+
+    "E_END": {
+      "id": "E_END",
+      "phase": "END",
+      "type": "terminal",
+      "developer_title": "THE VIBE ENGINEER 🌀",
+      "message": "Aesthetic profile locked — real-time reactivity, perf strategy, interactivity model, deployment, the full creative audit. Your README will make the chaos look like intentional art direction.",
+      "payload_note": "Aggregate all collects into category, problem, tech_stack, and experimental_detail keys."
+    }
+
+  }
+}
