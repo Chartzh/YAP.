@@ -329,57 +329,51 @@
             UPS</span>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-          <!-- Feature 1: Combo Meter -->
+          <!-- Feature 1: Akinator Wizard -->
           <div
             class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300">
             <div
               class="h-48 bg-primary-container brutal-border flex items-center justify-center p-4 relative overflow-hidden">
               <div
-                class="absolute inset-0 opacity-20 font-body-md p-2 font-mono text-xs overflow-hidden break-words leading-tight">
-                so anyway I started coding and realized that the legacy system was completely broken so I had to rewrite
-                the entire authentication flow using jwt tokens but then the database started complaining about
-                concurrent connections so I added a connection pool and configured redis for caching which sped things
-                up by like 200% but now the frontend team is asking for graphql...
+                class="absolute inset-0 opacity-20 font-body-md p-4 font-mono text-xs overflow-hidden break-all leading-relaxed select-none tracking-wider">
+                S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END S1 -> B5 -> C3 -> END
               </div>
               <div
                 class="relative z-10 bg-[#FF0055] text-white px-4 py-2 brutal-border brutal-shadow-sm font-headline-lg text-headline-lg uppercase transform -rotate-6 scale-110 group-hover:scale-125 transition-transform duration-300">
-                YAP COMBO x1
+                AKINATOR ACTIVE 🔮
               </div>
             </div>
             <div>
-              <h3 class="font-headline-lg text-headline-lg uppercase mb-2">YAP COMBO METER</h3>
+              <h3 class="font-headline-lg text-headline-lg uppercase mb-2">AKINATOR WIZARD</h3>
               <p class="font-body-md text-body-md">
-                Hit over 100 characters of raw input and ignite the combo meter. We reward you for over-explaining. Keep
-                the vibe flowing.
+                Too lazy to type a single word? Just hit our 11-step branching decision tree. Answer quick tactical questions about your architecture, and watch the AI build a flawless technical profile for you. 100% click-based, 0% typing.
               </p>
             </div>
           </div>
-          <!-- Feature 2: RPG Loading States -->
+          <!-- Feature 2: GitHub Repo Parser -->
           <div
             class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-4">
             <div
               class="h-48 bg-ink brutal-border p-4 flex flex-col justify-center font-body-md text-body-md text-slime-green space-y-2 font-mono">
-              <div class="opacity-50">&gt; [SCANNING REPO...]</div>
-              <div class="opacity-70">&gt; [INJECTING EMOTION...]</div>
-              <div class="opacity-90">&gt; [BYPASSING BORING BITS...]</div>
-              <div class="text-primary-container font-bold animate-pulse">&gt; [YAP COMPLETE!]</div>
+              <div class="opacity-50">&gt; git clone repository...</div>
+              <div class="opacity-80">&gt; analyzing source code...</div>
+              <div class="text-[#00FF87] font-bold animate-pulse">&gt; [PARSING COMPLETED 🟢]</div>
             </div>
             <div>
-              <h3 class="font-headline-lg text-headline-lg uppercase mb-2">RPG LOADING STATES</h3>
+              <h3 class="font-headline-lg text-headline-lg uppercase mb-2">GITHUB REPO PARSER</h3>
               <p class="font-body-md text-body-md">
-                Ditch the boring spinners. Experience your code transforming with sequential terminal updates that bring
-                the hype.
+                Drop your public GitHub repository URL and run. Our serverless backend automatically dissects your code files, extracts core mechanics, filters the noise, and maps out a production-grade markdown layout in seconds.
               </p>
             </div>
           </div>
-          <!-- Feature 3: Developer Class Titles -->
+          <!-- Feature 3: Dev Class Titles -->
           <div
             class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-8">
             <div
               class="h-48 bg-surface-container-low brutal-border p-4 flex flex-col items-center justify-center gap-4 relative">
               <span class="material-symbols-outlined text-6xl text-ink">workspace_premium</span>
               <div
-                class="bg-electric-blue text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[-4deg] absolute top-6 left-6 brutal-shadow-sm">
+                class="bg-slime-green text-ink px-3 py-1 brutal-border font-label-md uppercase rotate-[-4deg] absolute top-6 left-6 brutal-shadow-sm">
                 Chaos Architect</div>
               <div
                 class="bg-primary text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[3deg] absolute bottom-6 right-6 brutal-shadow-sm">
@@ -950,6 +944,42 @@
       <button id="btn-close-tutorial"
         class="bg-volt-yellow text-ink font-display-sm text-xl py-4 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all text-center flex justify-center items-center gap-3 rounded-none">
         GOT IT, LET ME YAP! 🚀
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       DEV TITLE ACHIEVEMENT OVERLAY MODAL
+       ========================================== -->
+  <div id="dev-title-achievement-modal" class="fixed inset-0 z-[10001] bg-ink/80 flex items-center justify-center p-4"
+    style="display:none;">
+    <div
+      class="bg-hot-pink text-white brutal-border w-full max-w-2xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8 flex flex-col gap-6 select-none relative animate-[banner-slide-down_0.3s_ease] rounded-none">
+      <!-- Header / Icon -->
+      <div class="text-center flex flex-col items-center gap-2">
+        <span class="material-symbols-outlined text-6xl text-volt-yellow animate-bounce" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+        <h2 class="font-display-md text-display-md uppercase tracking-tight text-white leading-none">
+          🏆 ARCHITECT VIBE LOCKED 🏆
+        </h2>
+      </div>
+
+      <!-- Achievement Box -->
+      <div class="brutal-border bg-ink p-8 brutal-shadow-sm text-center transform -rotate-1 rounded-none">
+        <span class="font-label-sm text-label-sm text-volt-yellow uppercase tracking-widest block mb-2">UNLOCKED DEVELOPER CLASS:</span>
+        <h1 id="modal-dev-title-display" class="font-display-md text-volt-yellow uppercase tracking-tighter leading-none py-2 text-[32px] md:text-[40px]">
+          THE MODEL WHISPERER 🤖
+        </h1>
+      </div>
+
+      <!-- Detail Info -->
+      <p class="font-body-md text-center text-white/90 font-semibold px-4">
+        Your yapping has successfully compiled. Your tactical profile is sealed, and your portfolio assets are ready for action.
+      </p>
+
+      <!-- Action Button -->
+      <button id="close-achievement-modal-btn"
+        class="bg-volt-yellow text-ink font-display-sm text-xl py-5 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all text-center flex justify-center items-center gap-3 rounded-none">
+        VIEW MY GENERATED README & POST 🚀
       </button>
     </div>
   </div>

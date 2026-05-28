@@ -243,6 +243,26 @@ function initWizard() {
   $('btn-logo-wizard').addEventListener('click', () => {
     transitionTo(STATE.LANDING);
   });
+
+  const closeAchievementBtn = $('close-achievement-modal-btn');
+  if (closeAchievementBtn) {
+    closeAchievementBtn.addEventListener('click', () => {
+      const modal = $('dev-title-achievement-modal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+      transitionTo(STATE.RESULT);
+    });
+  }
+}
+
+function showDevTitleAchievementModal(devTitle) {
+  const modal = $('dev-title-achievement-modal');
+  const display = $('modal-dev-title-display');
+  if (modal && display) {
+    display.textContent = devTitle || "THE CHOSEN ONE 🔮";
+    modal.style.display = 'flex';
+  }
 }
 
 function openWizard() {
@@ -509,7 +529,9 @@ async function triggerWizardGeneration(projName) {
 
     // Populate assets and display
     populateResults(genData.readme_md, genData.linkedin_post);
-    transitionTo(STATE.RESULT);
+    
+    // Show achievement modal overlay!
+    showDevTitleAchievementModal(appState.developerTitle);
 
   } catch (error) {
     transitionTo(STATE.DASHBOARD);
