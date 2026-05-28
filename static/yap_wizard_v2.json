@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "2.0.0",
-    "name": "YAP! Diagnostic Wizard — Akinator Developer Edition v2",
+    "name": "YAP! Diagnostic Wizard — Yap-Wizard (Branching Spec) v2",
     "description": "Full branching questionnaire v2. All branches now have 10-12 steps. Each END node contains collected_data ready to map to Flask /api/generate payload keys: category, problem, tech_stack, experimental_detail.",
     "payload_keys": ["category", "problem", "tech_stack", "experimental_detail"],
     "changelog": "v2: Branch B deepened from 7 to 12 steps (added auth, rate limiting/caching, background workers, containerization). Branch C deepened from 7 to 12 steps (added vector DB, model deployment, prediction storage, serving infrastructure). Branch D deepened from 6 to 11 steps (added power management, frontend dashboard, data retention, OTA updates). Branch E deepened from 5 to 11 steps (added real-time API reactivity, performance optimization, interactivity model, deployment/sharing, and statement layer)."

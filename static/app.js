@@ -1,9 +1,9 @@
 /**
- * YAP! — SPA State Machine (Akinator Edition)
+ * YAP! — SPA State Machine (Yap-Wizard Edition)
  * States:
  *   STATE_LANDING  -> State 0: Landing page
  *   STATE_DASHBOARD -> State 1: Input dashboard (GitHub vs Manual)
- *   STATE_WIZARD    -> State 2: Dedicated Akinator Questionnaire Page
+ *   STATE_WIZARD    -> State 2: Dedicated Yap-Wizard Questionnaire Page
  *   STATE_LOADING  -> State 3: Monospaced arcade typewriter terminal logs
  *   STATE_RESULT   -> State 4: Standalone Output Tabs Page
  */
@@ -48,7 +48,7 @@ const appState = {
 const $ = (id) => document.getElementById(id);
 const $$ = (sel) => document.querySelectorAll(sel);
 
-// Global state variables for the Akinator state machine
+// Global state variables for the Yap-Wizard state machine
 let wizardData = null;
 let collectedPayload = {};
 let currentStepId = 'S1';
@@ -221,7 +221,7 @@ function switchInputMode(mode) {
   }
 }
 
-// --- STATE 2: DYNAMIC AKINATOR WIZARD PAGE ---
+// --- STATE 2: DYNAMIC YAP-WIZARD PAGE ---
 async function fetchWizardData() {
   try {
     const response = await fetch('/static/yap_wizard_v2.json');
@@ -230,7 +230,7 @@ async function fetchWizardData() {
     console.log("Wizard schema fetched successfully.");
   } catch (error) {
     console.error("Error loading wizard schema:", error);
-    showError("Could not fetch Akinator Wizard structure. Make sure yap_wizard_v2.json is in static/.");
+    showError("Could not fetch Yap-Wizard structure. Make sure yap_wizard_v2.json is in static/.");
   }
 }
 
@@ -501,7 +501,7 @@ async function triggerWizardGeneration(projName) {
   const questionnairePayload = buildQuestionnairePayload(collectedPayload);
 
   const payload = {
-    code_content: "", // Built entirely via Akinator wizard
+    code_content: "", // Built entirely via Yap-Wizard
     project_purpose: "",
     questionnaire: questionnairePayload,
     vibe: appState.selectedVibe,
@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initWizard();
   initResults();
 
-  // Load Akinator JSON schema asynchronously
+  // Load Yap-Wizard JSON schema asynchronously
   fetchWizardData();
 
   // Closing error button
