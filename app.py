@@ -8,6 +8,7 @@ import re
 import json
 import base64
 import logging
+import time
 from urllib.parse import urlparse
 
 import requests
@@ -246,6 +247,7 @@ def build_prompt(
     questionnaire: dict,
     vibe: str,
     repo_name: str = "",
+    project_purpose: str = "",
 ) -> str:
     vibe_desc = VIBE_DESCRIPTIONS.get(vibe.lower(), VIBE_DESCRIPTIONS["humblebrag"])
 
@@ -262,6 +264,9 @@ def build_prompt(
     questionnaire_text = "\n".join(q_lines) if q_lines else "(User skipped the questionnaire)"
 
     prompt_parts = []
+    if project_purpose:
+        prompt_parts.append(f"## PROJECT PURPOSE / CORE ACTION\n{project_purpose}\n")
+
     prompt_parts.append(f"## CONTEXT FROM DEVELOPER\n{questionnaire_text}\n")
 
     if repo_name:
@@ -282,30 +287,48 @@ def build_prompt(
 
 
 def call_gemini(prompt: str) -> dict:
-    """Call Gemini API and return parsed JSON output."""
+    """Call Gemini API and return parsed JSON output with auto-retry on 503/UNAVAILABLE."""
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY environment variable is not set.")
 
     client = genai.Client(api_key=GEMINI_API_KEY)
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,
-            temperature=0.85,
-            max_output_tokens=4096,
-        ),
-    )
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    temperature=0.85,
+                    max_output_tokens=4096,
+                ),
+            )
 
-    raw_text = response.text.strip()
+            raw_text = response.text.strip()
 
-    # Strip any accidental markdown fences
-    if raw_text.startswith("```"):
-        raw_text = re.sub(r"^```(?:json)?\n?", "", raw_text)
-        raw_text = re.sub(r"\n?```$", "", raw_text.strip())
+            # Strip any accidental markdown fences
+            if raw_text.startswith("```"):
+                raw_text = re.sub(r"^```(?:json)?\n?", "", raw_text)
+                raw_text = re.sub(r"\n?```$", "", raw_text.strip())
 
-    return json.loads(raw_text)
+            return json.loads(raw_text)
+
+        except Exception as e:
+            err_msg = str(e)
+            is_transient = "503" in err_msg or "UNAVAILABLE" in err_msg.upper()
+
+            if is_transient and attempt < max_attempts:
+                logger.warning(
+                    f"Gemini API transient error (503/UNAVAILABLE) on attempt {attempt}/{max_attempts}. "
+                    f"Retrying in 2 seconds... Details: {err_msg}"
+                )
+                time.sleep(2)
+                continue
+            else:
+                logger.error(f"Gemini API failure on attempt {attempt}/{max_attempts}: {err_msg}")
+                raise e
 
 
 # ─── Routes ──────────────────────────────────────────────────────────────────
@@ -359,6 +382,7 @@ def api_generate():
     data = request.get_json(force=True, silent=True) or {}
 
     code_content = (data.get("code_content") or "").strip()
+    project_purpose = (data.get("project_purpose") or "").strip()
     questionnaire = data.get("questionnaire") or {}
     vibe = (data.get("vibe") or "humblebrag").strip().lower()
     repo_name = (data.get("repo_name") or data.get("project_name") or "").strip()
@@ -367,11 +391,11 @@ def api_generate():
     if vibe not in VIBE_DESCRIPTIONS:
         vibe = "humblebrag"
 
-    if not code_content and not any(questionnaire.values()):
-        return jsonify({"error": "No content provided. Add code or fill out the questionnaire."}), 400
+    if not code_content and not project_purpose and not any(questionnaire.values()):
+        return jsonify({"error": "No content provided. Add code, a project purpose, or fill out the questionnaire."}), 400
 
     try:
-        prompt = build_prompt(code_content, questionnaire, vibe, repo_name)
+        prompt = build_prompt(code_content, questionnaire, vibe, repo_name, project_purpose=project_purpose)
         result = call_gemini(prompt)
 
         if "readme_md" not in result or "linkedin_post" not in result:
@@ -397,6 +421,16 @@ def api_generate():
 @app.route("/healthz")
 def healthz():
     return jsonify({"status": "ok", "service": "YAP!"})
+
+
+@app.route("/favicon.ico")
+def favicon():
+    svg_content = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#EBFF00" stroke="#000000" stroke-width="2"/>
+  <text x="50%" y="60%" font-family="sans-serif" font-weight="900" font-size="11" fill="#000000" text-anchor="middle" letter-spacing="-0.5">YAP!</text>
+</svg>"""
+    from flask import Response
+    return Response(svg_content, mimetype="image/svg+xml")
 
 
 # ─── Run ─────────────────────────────────────────────────────────────────────

@@ -26,6 +26,7 @@ const appState = {
   currentMode: INPUT_MODE.GITHUB,
   selectedVibe: 'corporate-alpha', // Default is Professional
   maxYapTriggered: false,
+  developerTitle: '', // Store dev title here!
 
   // Manual wizard defaults (if any)
   wizard: {
@@ -93,6 +94,15 @@ function transitionTo(newState) {
         stateDashboard.classList.add('active');
         stateDashboard.style.display = 'flex';
       }
+
+      // Check onboarding localStorage
+      const isComplete = localStorage.getItem('yap_onboarding_complete');
+      if (isComplete !== 'true') {
+        const tutorial = $('app-onboarding-tutorial');
+        if (tutorial) {
+          tutorial.style.display = 'flex';
+        }
+      }
     } else {
       const targetView = $(`state-${newState}`);
       if (targetView) {
@@ -103,7 +113,16 @@ function transitionTo(newState) {
   }
 
   clearError();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (newState === STATE.LOADING) {
+    setTimeout(() => {
+      const loadingEl = $('state-loading');
+      if (loadingEl) {
+        loadingEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 50);
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 // --- STATE 0: LANDING PAGE ---
@@ -123,6 +142,18 @@ function initDashboard() {
   // Toggles for GitHub vs Manual modes
   $('btn-tab-github').addEventListener('click', () => switchInputMode(INPUT_MODE.GITHUB));
   $('btn-tab-manual').addEventListener('click', () => switchInputMode(INPUT_MODE.MANUAL));
+
+  // Onboarding Tutorial Close Button
+  const closeTutorialBtn = $('btn-close-tutorial');
+  if (closeTutorialBtn) {
+    closeTutorialBtn.addEventListener('click', () => {
+      const tutorial = $('app-onboarding-tutorial');
+      if (tutorial) {
+        tutorial.style.display = 'none';
+      }
+      localStorage.setItem('yap_onboarding_complete', 'true');
+    });
+  }
 
   // Vibe Selection Chips
   const vibeMapping = {
@@ -387,6 +418,7 @@ function buildQuestionnairePayload(payload) {
 function handleTerminalNode(stepData) {
   // Update header dev badges
   const devTitle = stepData.developer_title || "THE CHOSEN ONE 🔮";
+  appState.developerTitle = devTitle;
   if ($('header-dev-title')) $('header-dev-title').textContent = devTitle;
   if ($('dev-title-display-text')) $('dev-title-display-text').textContent = devTitle;
 
@@ -450,6 +482,7 @@ async function triggerWizardGeneration(projName) {
 
   const payload = {
     code_content: "", // Built entirely via Akinator wizard
+    project_purpose: "",
     questionnaire: questionnairePayload,
     vibe: appState.selectedVibe,
     repo_name: projName === "AI_GENERATE_NAME" ? "" : projName,
@@ -622,12 +655,22 @@ function showCopyToast(toastElement) {
 }
 
 function determineDeveloperTitle() {
+  if (appState.developerTitle) {
+    return appState.developerTitle;
+  }
   if (appState.maxYapTriggered) {
     return 'THE ABSOLUTE YAPPER 📢';
   }
-  if (appState.selectedVibe === 'corporate-alpha') {
-    return 'THE CORPORATE ALPHA 👔';
+  
+  // Find which vibe button is active
+  const activeVibeBtn = document.querySelector('.vibe-chip.active');
+  if (activeVibeBtn) {
+    if (activeVibeBtn.id === 'vibe-btn-professional') return 'THE CORPORATE ALPHA 👔';
+    if (activeVibeBtn.id === 'vibe-btn-chaotic') return 'CHAOS ARCHITECT 🌪️';
+    if (activeVibeBtn.id === 'vibe-btn-minimalist') return 'CODE POET 📜';
+    if (activeVibeBtn.id === 'vibe-btn-hacker') return '1337 H4X0R 💻';
   }
+  
   return 'THE GHOST DEV 👻';
 }
 
@@ -726,7 +769,7 @@ function renderLinkedInHTML(text) {
         <div class="w-12 h-12 bg-electric-blue brutal-border rounded-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzxDtW_UFANJRElOtiOxICywsgXVjh0QLDlkmzYIMC77Q0iyeM1G6_URpdglmdZHP_woJWU1nMq7fpfwCIi_4b7u85gwJGWZiTBMh91zQikCTqqiodsnH35eA03ponFrPAMttpWMVhRBAaX3oDDh7oHQPC0j6PYDx_XbhL1fK9MEmlETA5SZjg7MtC-0YSmyOFg6RcB2iIRffc1JHbqPI2MBZMGI7jRsm0E5JjaFsCZFzNaCxLUdXDQTNdMyr8dtMWJl7ic1-AtQg'); background-size: cover; background-position: center;"></div>
         <div>
           <div class="font-bold text-ink uppercase">YAP! Developer</div>
-          <div class="text-xs text-on-surface-variant uppercase mt-1">Senior Yap Engineer</div>
+          <div class="text-xs text-on-surface-variant uppercase mt-1">${determineDeveloperTitle()}</div>
         </div>
       </div>
       <div class="font-body-md text-ink text-sm leading-relaxed">
@@ -743,10 +786,13 @@ function populateResults(readme, linkedin) {
   $('readme-preview-content').innerHTML = renderReadmeHTML(readme);
   $('linkedin-preview-content').innerHTML = renderLinkedInHTML(linkedin);
 
-  // Only change topbar badge if it wasn't already set by the Akinator wizard
+  // Set the topbar badges in both headers
   const title = determineDeveloperTitle();
-  if ($('header-dev-title') && $('header-dev-title').textContent.includes("YAPPING: IDLE")) {
+  if ($('header-dev-title')) {
     $('header-dev-title').textContent = title;
+  }
+  if ($('result-dev-title')) {
+    $('result-dev-title').textContent = title;
   }
 
   switchOutputTab('readme');
@@ -759,17 +805,33 @@ function handleResetGenerator() {
   if (badge) badge.style.display = 'none';
   
   // Clear manual textareas
-  $('manual-core-logic').value = '';
-  $('manual-frameworks').value = '';
-  $('manual-challenge').value = '';
+  const manualTextareas = ['manual-project-purpose', 'manual-core-logic', 'manual-frameworks', 'manual-challenge'];
+  manualTextareas.forEach(id => {
+    const el = $(id);
+    if (el) {
+      el.value = '';
+      el.style.height = 'auto';
+    }
+  });
   $('manual-project-name').value = '';
   
   appState.wizard = { category: '', categoryLabel: '', experimentalDetail: '' };
   appState.maxYapTriggered = false;
+  appState.developerTitle = '';
   $('slider-yap-length').value = 75;
   $('slider-label').textContent = 'Volume: 75%';
 
   if ($('header-dev-title')) $('header-dev-title').textContent = "YAPPING: IDLE 💤";
+  
+  // Hide all individual combo badges
+  const badgeIds = ['combo-badge-purpose', 'combo-badge-core-logic', 'combo-badge-frameworks', 'combo-badge-challenge'];
+  badgeIds.forEach(id => {
+    const el = $(id);
+    if (el) {
+      el.classList.remove('visible', 'max-yap');
+      el.removeAttribute('data-multiplier');
+    }
+  });
 
   transitionTo(STATE.DASHBOARD);
 }
@@ -815,7 +877,8 @@ async function handleTransformSubmission() {
     await animPromise;
 
   } else {
-    // Manual inputs: read from the three textareas and project name input
+    // Manual inputs: read from the textareas and project name input
+    const projectPurpose = $('manual-project-purpose').value.trim();
     const coreLogic = $('manual-core-logic').value.trim();
     const frameworks = $('manual-frameworks').value.trim();
     const challenge = $('manual-challenge').value.trim();
@@ -824,8 +887,8 @@ async function handleTransformSubmission() {
     // Use project name input as repoName / project name parameter
     repoName = projNameInput;
 
-    if (!coreLogic && !frameworks && !challenge) {
-      showError("Please describe your project, frameworks, or challenge to transform.");
+    if (!projectPurpose && !coreLogic && !frameworks && !challenge) {
+      showError("Please describe your project purpose, core logic, frameworks, or challenge to transform.");
       return;
     }
 
@@ -840,6 +903,7 @@ async function handleTransformSubmission() {
   // Construct prompt payload
   const payload = {
     code_content: codeContent,
+    project_purpose: appState.currentMode === INPUT_MODE.MANUAL ? $('manual-project-purpose').value.trim() : '',
     questionnaire: {
       problem: "Exploring portfolio configurations and structure mappings",
       category: "Web Application",
@@ -895,6 +959,66 @@ function clearError() {
   if (banner) banner.style.display = 'none';
 }
 
+function updateComboMeter(event) {
+  const textarea = event.target;
+  if (!textarea) return;
+
+  // Map the textarea ID to its corresponding badge and text element IDs
+  const idMap = {
+    'manual-project-purpose': { badge: 'combo-badge-purpose', text: 'combo-text-purpose' },
+    'manual-core-logic': { badge: 'combo-badge-core-logic', text: 'combo-text-core-logic' },
+    'manual-frameworks': { badge: 'combo-badge-frameworks', text: 'combo-text-frameworks' },
+    'manual-challenge': { badge: 'combo-badge-challenge', text: 'combo-text-challenge' }
+  };
+
+  const elements = idMap[textarea.id];
+  if (!elements) return;
+
+  const length = textarea.value.length;
+  const badge = $(elements.badge);
+  const text = $(elements.text);
+
+  if (!badge || !text) return;
+
+  if (length >= 100) {
+    const multiplier = Math.floor(length / 100);
+    const prevMultiplier = badge.getAttribute('data-multiplier');
+    text.textContent = `YAP COMBO x${multiplier}`;
+
+    if (length >= 500) {
+      text.textContent = `⚡ MAXIMUM YAP x${multiplier} ⚡`;
+    }
+
+    if (prevMultiplier !== multiplier.toString()) {
+      badge.classList.remove('visible');
+      badge.classList.remove('max-yap');
+      void badge.offsetWidth; // Trigger reflow to restart CSS keyframe animation
+      badge.classList.add('visible');
+      if (length >= 500) {
+        badge.classList.add('max-yap');
+      }
+      badge.setAttribute('data-multiplier', multiplier.toString());
+    } else {
+      badge.classList.add('visible');
+      if (length >= 500) {
+        badge.classList.add('max-yap');
+      } else {
+        badge.classList.remove('max-yap');
+      }
+    }
+  } else {
+    badge.classList.remove('visible');
+    badge.classList.remove('max-yap');
+    badge.removeAttribute('data-multiplier');
+  }
+}
+
+function autoExpandTextarea(event) {
+  const el = event.target;
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
 // --- INITIALIZER ---
 document.addEventListener('DOMContentLoaded', () => {
   initLanding();
@@ -908,6 +1032,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Closing error button
   const closeErr = $('btn-close-error');
   if (closeErr) closeErr.addEventListener('click', clearError);
+
+  // Bind combo meter inputs
+  const manualInputs = [
+    'manual-project-purpose',
+    'manual-core-logic',
+    'manual-frameworks',
+    'manual-challenge'
+  ];
+  manualInputs.forEach(id => {
+    const el = $(id);
+    if (el) {
+      el.addEventListener('input', updateComboMeter);
+      el.addEventListener('input', autoExpandTextarea);
+      // Initialize heights
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    }
+  });
 
   // Set default State 0: Landing page
   transitionTo(STATE.LANDING);

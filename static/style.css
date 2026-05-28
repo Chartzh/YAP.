@@ -90,7 +90,7 @@ input[type=range]::-webkit-slider-runnable-track {
 
 /* --- Combo Badges --- */
 .combo-badge-display {
-  display: inline-flex;
+  display: none;
   align-items: center;
   gap: 0.35rem;
   font-family: 'Syne', sans-serif;
@@ -102,19 +102,12 @@ input[type=range]::-webkit-slider-runnable-track {
   box-shadow: 3px 3px 0px #000000;
   background-color: #EBFF00;
   color: #000000;
-  position: absolute;
-  right: 1rem;
-  top: 3.5rem;
   z-index: 10;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.15s ease, transform 0.15s ease;
   pointer-events: none;
 }
 
 .combo-badge-display.visible {
-  opacity: 1;
-  transform: scale(1);
+  display: inline-flex;
   animation: badge-shake-anim 0.35s ease forwards;
 }
 
@@ -222,4 +215,32 @@ input[type=range]::-webkit-slider-runnable-track {
 .wizard-option-btn-neo:active {
   transform: translate(4px, 4px) !important;
   box-shadow: 4px 4px 0px 0px #000000 !important;
+}
+
+/* --- Onboarding Modal Custom Stylings --- */
+#app-onboarding-tutorial {
+  backdrop-filter: blur(4px);
+}
+
+/* --- Neo-Brutalist Footer Underline Hover Effect --- */
+.footer-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem; /* text-xs / label-sm */
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 600;
+  transition: none; /* No transition for rigid Neo-Brutalism */
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  color: #EBFF00 !important; /* Volt Yellow hover color */
+}
+
+/* --- Auto-Expanding Textarea tweaks --- */
+#panel-manual-inputs textarea {
+  overflow-y: hidden;
+  resize: none;
 }

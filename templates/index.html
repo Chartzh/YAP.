@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html class="light" lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>YAP! - Turn Your Code Into Portfolio Gold</title>
-  
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23EBFF00' stroke='%23000000' stroke-width='2'/><text x='50%' y='60%' font-family='Syne, sans-serif' font-weight='900' font-size='12' fill='%23000000' text-anchor='middle' letter-spacing='-0.5'>YAP!</text></svg>">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  
+
   <!-- Google Fonts & Material Icons -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&amp;family=Syne:wght@400..800&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&amp;family=Syne:wght@400..800&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
 
   <script id="tailwind-config">
     tailwind.config = {
@@ -121,13 +127,17 @@
       }
     };
   </script>
-  
+
   <link rel="stylesheet" href="/static/style.css" />
 </head>
-<body class="min-h-screen text-ink font-body-md antialiased overflow-x-hidden selection:bg-electric-blue selection:text-white">
+
+<body
+  class="min-h-screen text-ink font-body-md antialiased overflow-x-hidden selection:bg-electric-blue selection:text-white">
 
   <!-- ERROR BANNER (Sticky Alert) -->
-  <div id="error-banner" class="error-banner flex items-center gap-4 bg-hot-pink text-white border-b-4 border-ink p-4 fixed top-0 left-0 w-full z-[9999]" style="display:none;">
+  <div id="error-banner"
+    class="error-banner flex items-center gap-4 bg-hot-pink text-white border-b-4 border-ink p-4 fixed top-0 left-0 w-full z-[9999]"
+    style="display:none;">
     <span class="material-symbols-outlined text-3xl">warning</span>
     <span id="error-message" class="font-bold">An error occurred.</span>
     <button id="btn-close-error" class="ml-auto text-2xl font-bold hover:text-black">×</button>
@@ -138,10 +148,13 @@
        ========================================== -->
   <div id="state-landing" class="state-view active">
     <!-- TopNavBar -->
-    <nav class="w-full brutal-border-b border-ink bg-primary-container text-ink font-label-md text-label-md uppercase sticky top-0 z-50">
-      <div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-full mx-auto md:px-margin-desktop px-margin-mobile">
+    <nav
+      class="w-full brutal-border-b border-ink bg-primary-container text-ink font-label-md text-label-md uppercase sticky top-0 z-50">
+      <div
+        class="flex justify-between items-center w-full px-margin-desktop py-3 max-w-full mx-auto md:px-margin-desktop px-margin-mobile">
         <!-- Brand -->
-        <div class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">
+        <div
+          class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">
           YAP!
         </div>
         <!-- Navigation Links -->
@@ -150,29 +163,36 @@
           <a class="text-ink hover:text-primary transition-colors block" href="#features">FEATURES</a>
         </div>
         <!-- Action Button -->
-        <button id="btn-landing-try" class="bg-electric-blue text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-6 py-2 font-label-md text-label-md uppercase transition-all duration-150">
+        <button id="btn-landing-try"
+          class="bg-electric-blue text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-6 py-2 font-label-md text-label-md uppercase transition-all duration-150">
           TRY NOW
         </button>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="w-full px-margin-mobile md:px-margin-desktop py-24 md:py-32 flex flex-col items-center justify-center text-center relative z-10">
-      <div class="max-w-5xl mx-auto flex flex-col items-center gap-8">
+    <section
+      class="w-full px-margin-mobile md:px-margin-desktop py-10 md:py-16 flex flex-col items-center justify-center text-center relative z-10">
+      <div class="max-w-5xl mx-auto flex flex-col items-center gap-4 md:gap-6">
         <!-- Eyebrow Badge -->
-        <div class="bg-surface text-ink px-4 py-2 brutal-border font-label-md text-label-md uppercase brutal-shadow-sm inline-flex items-center gap-2 transform -rotate-2">
+        <div
+          class="bg-surface text-ink px-4 py-2 brutal-border font-label-md text-label-md uppercase brutal-shadow-sm inline-flex items-center gap-2 transform -rotate-2">
           <span class="w-3 h-3 bg-slime-green rounded-full inline-block border-2 border-ink"></span>
           Nothing to hide here.
         </div>
-        <h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-ink uppercase max-w-4xl tracking-tighter leading-none">
-          YAP! YOUR VIBE <br><span class="text-white bg-ink px-4 py-1 inline-block mt-4 brutal-border rotate-1">INTO CODE</span>
+        <h1
+          class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg text-ink uppercase max-w-4xl tracking-tighter leading-none">
+          YAP! YOUR VIBE <br><span class="text-white bg-ink px-4 py-1 inline-block mt-2 brutal-border rotate-1">INTO
+            CODE</span>
         </h1>
-        <p class="font-body-lg text-body-lg max-w-2xl text-ink font-semibold mt-4">
-          Transform your chaotic yapping sessions into professional GitHub READMEs and LinkedIn posts in seconds. Stop polishing. Start yapping.
+        <p class="font-body-lg text-body-lg max-w-2xl text-ink font-semibold mt-2">
+          Transform your chaotic yapping sessions into professional GitHub READMEs and LinkedIn posts in seconds. Stop
+          polishing. Start yapping.
         </p>
-        <div class="mt-8 flex flex-col sm:flex-row gap-6 w-full sm:w-auto justify-center">
-          <button id="btn-landing-cta" class="bg-electric-blue text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-10 py-5 font-headline-lg text-headline-lg uppercase transition-all duration-150 flex items-center justify-center gap-4 group">
-            TRY NOW 
+        <div class="mt-4 flex flex-col sm:flex-row gap-6 w-full sm:w-auto justify-center">
+          <button id="btn-landing-cta"
+            class="bg-electric-blue text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-10 py-5 font-headline-lg text-headline-lg uppercase transition-all duration-150 flex items-center justify-center gap-4 group">
+            TRY NOW
             <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
           </button>
         </div>
@@ -180,16 +200,20 @@
     </section>
 
     <!-- Features Bento Grid -->
-    <section id="how-it-works" class="w-full px-margin-mobile md:px-margin-desktop py-16 md:py-24 bg-surface-container-low brutal-border-t border-ink relative z-20">
+    <section id="how-it-works"
+      class="w-full px-margin-mobile md:px-margin-desktop py-16 md:py-24 bg-surface-container-low brutal-border-t border-ink relative z-20">
       <div class="max-w-7xl mx-auto">
         <div class="flex items-center justify-between mb-16 brutal-border-b border-ink pb-8">
-          <h2 class="font-display-md-mobile text-display-md-mobile md:font-display-md md:text-display-md uppercase">THE "HOW IT WORKS"</h2>
+          <h2 class="font-display-md-mobile text-display-md-mobile md:font-display-md md:text-display-md uppercase">THE
+            "HOW IT WORKS"</h2>
           <span class="material-symbols-outlined text-6xl md:text-8xl hidden sm:block">mic</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
           <!-- Card 1 -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300">
-            <div class="w-16 h-16 bg-primary-container brutal-border border-ink flex items-center justify-center rounded-full mb-4">
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300">
+            <div
+              class="w-16 h-16 bg-primary-container brutal-border border-ink flex items-center justify-center rounded-full mb-4">
               <span class="font-headline-lg text-headline-lg">1</span>
             </div>
             <h3 class="font-headline-lg text-headline-lg uppercase">YAP IT OUT</h3>
@@ -198,18 +222,23 @@
             </p>
           </div>
           <!-- Card 2 -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300 md:translate-y-4">
-            <div class="w-16 h-16 bg-electric-blue text-white brutal-border border-ink flex items-center justify-center rounded-full mb-4">
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300 md:translate-y-4">
+            <div
+              class="w-16 h-16 bg-electric-blue text-white brutal-border border-ink flex items-center justify-center rounded-full mb-4">
               <span class="font-headline-lg text-headline-lg">2</span>
             </div>
             <h3 class="font-headline-lg text-headline-lg uppercase">AI TRANSFORMS</h3>
             <p class="font-body-md text-body-md flex-grow">
-              Our logic extracts the juice from your chaos. It structurizes, formats, and professionalizes your raw thoughts.
+              Our logic extracts the juice from your chaos. It structurizes, formats, and professionalizes your raw
+              thoughts.
             </p>
           </div>
           <!-- Card 3 -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300 md:translate-y-8">
-            <div class="w-16 h-16 bg-neon-coral text-white brutal-border border-ink flex items-center justify-center rounded-full mb-4">
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 hover:-translate-y-2 transition-transform duration-300 md:translate-y-8">
+            <div
+              class="w-16 h-16 bg-neon-coral text-white brutal-border border-ink flex items-center justify-center rounded-full mb-4">
               <span class="font-headline-lg text-headline-lg">3</span>
             </div>
             <h3 class="font-headline-lg text-headline-lg uppercase">READY TO DEPLOY</h3>
@@ -222,29 +251,37 @@
     </section>
 
     <!-- Visual Showcase -->
-    <section id="features" class="w-full px-margin-mobile md:px-margin-desktop py-24 bg-ink text-background relative z-10 overflow-hidden">
+    <section id="features"
+      class="w-full px-margin-mobile md:px-margin-desktop py-24 bg-ink text-background relative z-10 overflow-hidden">
       <!-- Decorative background text -->
-      <div class="absolute inset-0 opacity-10 font-display-lg text-[200px] leading-none uppercase whitespace-nowrap flex items-center pointer-events-none select-none overflow-hidden">
+      <div
+        class="absolute inset-0 opacity-10 font-display-lg text-[200px] leading-none uppercase whitespace-nowrap flex items-center pointer-events-none select-none overflow-hidden">
         <div class="animate-marquee">NO FILTER JUST CODE NO FILTER JUST CODE NO FILTER JUST CODE</div>
       </div>
-      
+
       <div class="max-w-7xl mx-auto relative z-20 flex flex-col lg:flex-row items-center gap-16">
         <!-- Left: Raw Input -->
         <div class="w-full lg:w-5/12">
           <div class="bg-surface text-ink brutal-border brutal-shadow p-6 rotate-[-2deg]">
             <div class="flex items-center justify-between mb-4 brutal-border-b border-ink pb-4">
-              <div class="font-label-md text-label-md uppercase bg-neon-coral text-white px-2 py-1 brutal-border border-ink">Chaotic Questionnaire</div>
+              <div
+                class="font-label-md text-label-md uppercase bg-neon-coral text-white px-2 py-1 brutal-border border-ink">
+                Chaotic Questionnaire</div>
               <span class="material-symbols-outlined">edit_note</span>
             </div>
             <div class="font-body-md text-body-md font-mono text-ink/70">
-              &gt; "so basically it's a python script that scrapes stuff but it uses async and aiohttp because requests was too slow. oh and it saves to sqlite..."
+              &gt; "so basically it's a python script that scrapes stuff but it uses async and aiohttp because requests
+              was too slow. oh and it saves to sqlite..."
             </div>
           </div>
-          <div class="flex justify-center my-8 lg:my-0 lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 z-30">
-            <div class="bg-primary-container p-4 brutal-border border-ink rounded-full brutal-shadow animate-bounce hidden lg:block">
+          <div
+            class="flex justify-center my-8 lg:my-0 lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 z-30">
+            <div
+              class="bg-primary-container p-4 brutal-border border-ink rounded-full brutal-shadow animate-bounce hidden lg:block">
               <span class="material-symbols-outlined text-4xl">arrow_forward</span>
             </div>
-            <div class="bg-primary-container p-4 brutal-border border-ink rounded-full brutal-shadow animate-bounce lg:hidden block">
+            <div
+              class="bg-primary-container p-4 brutal-border border-ink rounded-full brutal-shadow animate-bounce lg:hidden block">
               <span class="material-symbols-outlined text-4xl">arrow_downward</span>
             </div>
           </div>
@@ -253,7 +290,9 @@
         <div class="w-full lg:w-7/12 lg:pl-12">
           <div class="bg-surface text-ink brutal-border brutal-shadow p-6 rotate-[1deg] translate-x-4">
             <div class="flex items-center justify-between mb-4 brutal-border-b border-ink pb-4">
-              <div class="font-label-md text-label-md uppercase bg-electric-blue text-white px-2 py-1 brutal-border border-ink">Sleek README.md</div>
+              <div
+                class="font-label-md text-label-md uppercase bg-electric-blue text-white px-2 py-1 brutal-border border-ink">
+                Sleek README.md</div>
               <div class="flex gap-2">
                 <span class="w-3 h-3 rounded-full bg-neon-coral brutal-border border-ink inline-block"></span>
                 <span class="w-3 h-3 rounded-full bg-primary-container brutal-border border-ink inline-block"></span>
@@ -265,7 +304,8 @@
               <p class="mb-4 text-ink/80">A high-performance asynchronous web scraper built with Python.</p>
               <h2 class="font-bold mb-2">Features</h2>
               <ul class="list-disc pl-5 mb-4 text-ink/80 space-y-1">
-                <li>Lightning-fast async execution via <code class="bg-surface-container px-1 py-0.5 brutal-border border-ink">aiohttp</code></li>
+                <li>Lightning-fast async execution via <code
+                    class="bg-surface-container px-1 py-0.5 brutal-border border-ink">aiohttp</code></li>
                 <li>Local data persistence using SQLite3</li>
               </ul>
               <div class="bg-surface-container-high p-4 brutal-border border-ink mt-4">
@@ -278,33 +318,47 @@
     </section>
 
     <!-- Pro Features Section -->
-    <section id="pro-features" class="w-full px-margin-mobile md:px-margin-desktop py-24 bg-surface-container-high brutal-border-t border-ink relative z-20">
+    <section id="pro-features"
+      class="w-full px-margin-mobile md:px-margin-desktop py-24 bg-surface-container-high brutal-border-t border-ink relative z-20">
       <div class="max-w-7xl mx-auto">
         <div class="flex items-center justify-between mb-16 brutal-border-b pb-8 border-ink">
-          <h2 class="font-display-md-mobile text-display-md-mobile md:font-display-md md:text-display-md uppercase">FEATURES</h2>
-          <span class="bg-[#FF0055] text-white px-4 py-2 brutal-border font-label-md text-label-md uppercase brutal-shadow-sm rotate-2 hidden sm:block">POWER UPS</span>
+          <h2 class="font-display-md-mobile text-display-md-mobile md:font-display-md md:text-display-md uppercase">
+            FEATURES</h2>
+          <span
+            class="bg-[#FF0055] text-white px-4 py-2 brutal-border font-label-md text-label-md uppercase brutal-shadow-sm rotate-2 hidden sm:block">POWER
+            UPS</span>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
           <!-- Feature 1: Combo Meter -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300">
-            <div class="h-48 bg-primary-container brutal-border flex items-center justify-center p-4 relative overflow-hidden">
-              <div class="absolute inset-0 opacity-20 font-body-md p-2 font-mono text-xs overflow-hidden break-words leading-tight">
-                so anyway I started coding and realized that the legacy system was completely broken so I had to rewrite the entire authentication flow using jwt tokens but then the database started complaining about concurrent connections so I added a connection pool and configured redis for caching which sped things up by like 200% but now the frontend team is asking for graphql...
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300">
+            <div
+              class="h-48 bg-primary-container brutal-border flex items-center justify-center p-4 relative overflow-hidden">
+              <div
+                class="absolute inset-0 opacity-20 font-body-md p-2 font-mono text-xs overflow-hidden break-words leading-tight">
+                so anyway I started coding and realized that the legacy system was completely broken so I had to rewrite
+                the entire authentication flow using jwt tokens but then the database started complaining about
+                concurrent connections so I added a connection pool and configured redis for caching which sped things
+                up by like 200% but now the frontend team is asking for graphql...
               </div>
-              <div class="relative z-10 bg-[#FF0055] text-white px-4 py-2 brutal-border brutal-shadow-sm font-headline-lg text-headline-lg uppercase transform -rotate-6 scale-110 group-hover:scale-125 transition-transform duration-300">
+              <div
+                class="relative z-10 bg-[#FF0055] text-white px-4 py-2 brutal-border brutal-shadow-sm font-headline-lg text-headline-lg uppercase transform -rotate-6 scale-110 group-hover:scale-125 transition-transform duration-300">
                 YAP COMBO x1
               </div>
             </div>
             <div>
               <h3 class="font-headline-lg text-headline-lg uppercase mb-2">YAP COMBO METER</h3>
               <p class="font-body-md text-body-md">
-                Hit over 100 characters of raw input and ignite the combo meter. We reward you for over-explaining. Keep the vibe flowing.
+                Hit over 100 characters of raw input and ignite the combo meter. We reward you for over-explaining. Keep
+                the vibe flowing.
               </p>
             </div>
           </div>
           <!-- Feature 2: RPG Loading States -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-4">
-            <div class="h-48 bg-ink brutal-border p-4 flex flex-col justify-center font-body-md text-body-md text-slime-green space-y-2 font-mono">
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-4">
+            <div
+              class="h-48 bg-ink brutal-border p-4 flex flex-col justify-center font-body-md text-body-md text-slime-green space-y-2 font-mono">
               <div class="opacity-50">&gt; [SCANNING REPO...]</div>
               <div class="opacity-70">&gt; [INJECTING EMOTION...]</div>
               <div class="opacity-90">&gt; [BYPASSING BORING BITS...]</div>
@@ -313,22 +367,32 @@
             <div>
               <h3 class="font-headline-lg text-headline-lg uppercase mb-2">RPG LOADING STATES</h3>
               <p class="font-body-md text-body-md">
-                Ditch the boring spinners. Experience your code transforming with sequential terminal updates that bring the hype.
+                Ditch the boring spinners. Experience your code transforming with sequential terminal updates that bring
+                the hype.
               </p>
             </div>
           </div>
           <!-- Feature 3: Developer Class Titles -->
-          <div class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-8">
-            <div class="h-48 bg-surface-container-low brutal-border p-4 flex flex-col items-center justify-center gap-4 relative">
+          <div
+            class="bg-surface brutal-border brutal-shadow p-8 flex flex-col gap-6 group hover:-translate-y-2 transition-transform duration-300 lg:translate-y-8">
+            <div
+              class="h-48 bg-surface-container-low brutal-border p-4 flex flex-col items-center justify-center gap-4 relative">
               <span class="material-symbols-outlined text-6xl text-ink">workspace_premium</span>
-              <div class="bg-electric-blue text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[-4deg] absolute top-6 left-6 brutal-shadow-sm">Chaos Architect</div>
-              <div class="bg-primary text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[3deg] absolute bottom-6 right-6 brutal-shadow-sm">Code Poet</div>
-              <div class="bg-neon-coral text-white px-4 py-2 brutal-border font-label-md uppercase z-10 brutal-shadow transform group-hover:scale-110 transition-transform duration-300">Senior Yap Engineer</div>
+              <div
+                class="bg-electric-blue text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[-4deg] absolute top-6 left-6 brutal-shadow-sm">
+                Chaos Architect</div>
+              <div
+                class="bg-primary text-white px-3 py-1 brutal-border font-label-md uppercase rotate-[3deg] absolute bottom-6 right-6 brutal-shadow-sm">
+                Code Poet</div>
+              <div
+                class="bg-neon-coral text-white px-4 py-2 brutal-border font-label-md uppercase z-10 brutal-shadow transform group-hover:scale-110 transition-transform duration-300">
+                Senior Yap Engineer</div>
             </div>
             <div>
               <h3 class="font-headline-lg text-headline-lg uppercase mb-2">DEV CLASS TITLES</h3>
               <p class="font-body-md text-body-md">
-                Your output gets crowned with a legendary developer class based on your vibe. Prove you're a true Senior Yap Engineer.
+                Your output gets crowned with a legendary developer class based on your vibe. Prove you're a true Senior
+                Yap Engineer.
               </p>
             </div>
           </div>
@@ -337,32 +401,37 @@
     </section>
 
     <!-- Final CTA -->
-    <section class="w-full px-margin-mobile md:px-margin-desktop py-32 bg-primary-container brutal-border-t border-ink text-center">
+    <section
+      class="w-full px-margin-mobile md:px-margin-desktop py-32 bg-primary-container brutal-border-t border-ink text-center">
       <div class="max-w-4xl mx-auto flex flex-col items-center gap-8">
-        <h2 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg uppercase text-ink max-w-3xl leading-none mix-blend-multiply">
+        <h2
+          class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg uppercase text-ink max-w-3xl leading-none mix-blend-multiply">
           STOP POLISHING.<br>START YAPPING.
         </h2>
         <p class="font-body-lg text-body-lg max-w-2xl text-ink font-semibold">
           The code speaks for itself. Let us handle the presentation.
         </p>
-        <button id="btn-landing-cta-bottom" class="mt-8 bg-neon-coral text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-16 py-8 font-display-sm text-display-sm uppercase transition-all duration-150 transform hover:scale-105 active:scale-95">
+        <button id="btn-landing-cta-bottom"
+          class="mt-8 bg-neon-coral text-white brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active px-16 py-8 font-display-sm text-display-sm uppercase transition-all duration-150 transform hover:scale-105 active:scale-95">
           TRY NOW FOR FREE
         </button>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="w-full brutal-border-t border-ink bg-ink text-background flex flex-col md:flex-row justify-between items-center px-margin-desktop py-12 flat scale-95">
+    <footer
+      class="w-full brutal-border-t border-ink bg-ink text-background flex flex-col md:flex-row justify-between items-center px-margin-desktop py-12 flat scale-95">
       <div class="font-display-md text-display-md text-background mb-8 md:mb-0">
         YAP!
       </div>
       <div class="font-body-md text-body-md text-background text-center md:text-left mb-8 md:mb-0">
         © 2026 YAP! PORTFOLIO GENERATOR. NO FILLER. JUST YAP.
       </div>
-      <div class="flex flex-wrap justify-center md:justify-end gap-6 font-label-md text-label-md uppercase">
-        <a class="text-background hover:text-primary-fixed transition-colors brutal-shadow-hover hover:-translate-y-1 block" href="#">GITHUB</a>
-        <a class="text-background hover:text-primary-fixed transition-colors brutal-shadow-hover hover:-translate-y-1 block" href="#">LINKEDIN</a>
-        <a class="text-background hover:text-primary-fixed transition-colors brutal-shadow-hover hover:-translate-y-1 block" href="#">TERMINAL</a>
+      <div class="flex flex-wrap justify-center md:justify-end gap-6">
+        <a class="footer-link text-background block" href="#how-it-works">HOW IT WORKS</a>
+        <a class="footer-link text-background block" href="#features">FEATURES</a>
+        <a class="footer-link text-background block" href="https://github.com/Chartzh" target="_blank"
+          rel="noopener noreferrer">GITHUB REPO</a>
       </div>
     </footer>
   </div>
@@ -370,35 +439,45 @@
   <!-- ==========================================
        DASHBOARD WRAPPER (STATE 1, 3, & 4)
        ========================================== -->
-  <div id="dashboard-wrapper" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden" style="display:none;">
-    
+  <div id="dashboard-wrapper" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden"
+    style="display:none;">
+
     <!-- TopNavBar -->
-    <header class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+    <header
+      class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
       <div class="flex items-center gap-4">
-        <div id="btn-logo-dashboard" class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">YAP!</div>
+        <div id="btn-logo-dashboard"
+          class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">
+          YAP!</div>
       </div>
       <div class="flex items-center gap-4">
-        <span id="header-dev-title" class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">YAPPING: IDLE 💤</span>
+        <span id="header-dev-title"
+          class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">YAPPING:
+          IDLE 💤</span>
       </div>
     </header>
 
     <div class="w-full min-h-[calc(100vh-100px)]">
       <!-- Main Content Area -->
-      <div class="flex-grow w-full p-margin-mobile md:p-gutter bg-primary-container flex flex-col justify-start items-center">
-        
+      <div
+        class="flex-grow w-full p-margin-mobile md:p-gutter bg-primary-container flex flex-col justify-start items-center">
+
         <!-- ==========================================
              STATE 1: DASHBOARD VIEW (Full Width Input Form)
              ========================================== -->
-        <div id="state-dashboard" class="dashboard-panel flex-grow flex flex-col gap-gutter w-full max-w-4xl mx-auto" style="display:none;">
-          
+        <div id="state-dashboard" class="dashboard-panel flex-grow flex flex-col gap-gutter w-full max-w-4xl mx-auto"
+          style="display:none;">
+
           <!-- Input Zone -->
           <div class="w-full flex flex-col gap-6">
             <!-- Mode Toggle Tabs -->
             <div class="flex gap-4 w-full">
-              <button id="btn-tab-github" class="flex-1 bg-electric-blue text-white py-4 px-4 font-headline-lg uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all text-center flex justify-center items-center gap-2">
+              <button id="btn-tab-github"
+                class="flex-1 bg-electric-blue text-white py-4 px-4 font-headline-lg uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all text-center flex justify-center items-center gap-2">
                 <span>[🐙]</span> Link GitHub
               </button>
-              <button id="btn-tab-manual" class="flex-1 bg-warm-grey text-ink py-4 px-4 font-headline-lg uppercase brutal-border translate-y-[4px] shadow-none hover:bg-surface-dim transition-colors text-center flex justify-center items-center gap-2">
+              <button id="btn-tab-manual"
+                class="flex-1 bg-warm-grey text-ink py-4 px-4 font-headline-lg uppercase brutal-border translate-y-[4px] shadow-none hover:bg-surface-dim transition-colors text-center flex justify-center items-center gap-2">
                 <span>[📝]</span> Manual/Private
               </button>
             </div>
@@ -409,28 +488,38 @@
               <!-- GITHUB URL INPUT ZONE -->
               <div id="panel-github-inputs" class="flex flex-col gap-8 mt-4">
                 <div class="space-y-2">
-                  <label class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Target Repository</label>
+                  <label
+                    class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Target
+                    Repository</label>
                   <div class="relative">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl">code</span>
-                    <input id="github-url-input" class="w-full bg-surface border-4 border-ink p-4 pl-14 font-body-lg text-body-lg text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors" placeholder="ENTER GITHUB REPO URL..." type="text"/>
+                    <span
+                      class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl">code</span>
+                    <input id="github-url-input"
+                      class="w-full bg-surface border-4 border-ink p-4 pl-14 font-body-lg text-body-lg text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors"
+                      placeholder="ENTER GITHUB REPO URL..." type="text" />
                   </div>
-                  <span id="github-file-badge" class="bg-black text-volt-yellow font-label-md py-1 px-3 brutal-border inline-block uppercase mt-2" style="display:none;"></span>
+                  <span id="github-file-badge"
+                    class="bg-black text-volt-yellow font-label-md py-1 px-3 brutal-border inline-block uppercase mt-2"
+                    style="display:none;"></span>
                 </div>
               </div> <!-- Close #panel-github-inputs -->
 
               <!-- MANUAL INPUTS ZONE (Revised: select dropdowns replaced by 3 textareas) -->
               <div id="panel-manual-inputs" class="flex flex-col gap-8 mt-4" style="display:none;">
-                
+
                 <!-- Progress Bar / Wizard Row -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-4 mt-2">
                   <div class="flex items-center gap-4">
-                    <button id="btn-trigger-wizard" class="bg-[#00FF87] text-ink font-label-md uppercase py-2 px-4 brutal-border brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
+                    <button id="btn-trigger-wizard"
+                      class="bg-[#00FF87] text-ink font-label-md uppercase py-2 px-4 brutal-border brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
                       <span class="material-symbols-outlined text-sm">help</span>
                       HELP! (CONFUSED WHAT TO YAP?)
                     </button>
                   </div>
                   <!-- Wizard summary info card -->
-                  <div id="wizard-summary-card" class="bg-surface-container-low border-2 border-ink p-2 text-xs font-bold uppercase" style="display:none;">
+                  <div id="wizard-summary-card"
+                    class="bg-surface-container-low border-2 border-ink p-2 text-xs font-bold uppercase"
+                    style="display:none;">
                     🎯 Selection: <span id="wizard-summary-text" class="text-electric-blue">None</span>
                   </div>
                 </div>
@@ -442,33 +531,76 @@
                       PROJECT NAME
                     </h2>
                     <div class="relative">
-                      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl">folder</span>
-                      <input id="manual-project-name" class="w-full bg-surface border-4 border-ink p-4 pl-14 font-body-lg text-body-lg text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors" placeholder="ENTER PROJECT NAME (OR LEAVE BLANK FOR AI)..." type="text"/>
+                      <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-3xl">folder</span>
+                      <input id="manual-project-name"
+                        class="w-full bg-surface border-4 border-ink p-4 pl-14 font-body-lg text-body-lg text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors"
+                        placeholder="ENTER PROJECT NAME (OR LEAVE BLANK FOR AI)..." type="text" />
                     </div>
+                  </div>
+
+                  <!-- Project Purpose Input -->
+                  <div class="flex flex-col gap-3">
+                    <div class="flex justify-between items-start gap-4">
+                      <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
+                        IN SHORT, WHAT DOES THIS PROJECT ACTUALLY DO?
+                      </h2>
+                      <div id="combo-badge-purpose" class="combo-badge-display shrink-0">
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+                        <span id="combo-text-purpose">YAP COMBO x1</span>
+                      </div>
+                    </div>
+                    <textarea id="manual-project-purpose"
+                      class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[100px] shadow-inner"
+                      placeholder="Type your project core purpose here... e.g., An AI waste-sorting application using Gemini API."></textarea>
                   </div>
 
                   <!-- Question 1 -->
                   <div class="flex flex-col gap-3">
-                    <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
-                      WHAT WAS THE CORE LOGIC OR METHODOLOGY THAT WAS MOST EXCITING WHILE BUILDING THIS PROJECT?
-                    </h2>
-                    <textarea id="manual-core-logic" class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner" placeholder="TYPE YOUR YAP HERE..."></textarea>
+                    <div class="flex justify-between items-start gap-4">
+                      <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
+                        WHAT WAS THE CORE LOGIC OR METHODOLOGY THAT WAS MOST EXCITING WHILE BUILDING THIS PROJECT?
+                      </h2>
+                      <div id="combo-badge-core-logic" class="combo-badge-display shrink-0">
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+                        <span id="combo-text-core-logic">YAP COMBO x1</span>
+                      </div>
+                    </div>
+                    <textarea id="manual-core-logic"
+                      class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner"
+                      placeholder="TYPE YOUR YAP HERE..."></textarea>
                   </div>
-                  
+
                   <!-- Question 2 -->
                   <div class="flex flex-col gap-3">
-                    <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
-                      WHICH FRAMEWORKS DID YOU USE AND WHY?
-                    </h2>
-                    <textarea id="manual-frameworks" class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner" placeholder="TYPE YOUR YAP HERE..."></textarea>
+                    <div class="flex justify-between items-start gap-4">
+                      <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
+                        WHICH FRAMEWORKS DID YOU USE AND WHY?
+                      </h2>
+                      <div id="combo-badge-frameworks" class="combo-badge-display shrink-0">
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+                        <span id="combo-text-frameworks">YAP COMBO x1</span>
+                      </div>
+                    </div>
+                    <textarea id="manual-frameworks"
+                      class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner"
+                      placeholder="TYPE YOUR YAP HERE..."></textarea>
                   </div>
-                  
+
                   <!-- Question 3 -->
                   <div class="flex flex-col gap-3">
-                    <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
-                      DESCRIBE THE BIGGEST CHALLENGE YOU OVERCAME.
-                    </h2>
-                    <textarea id="manual-challenge" class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner" placeholder="TYPE YOUR YAP HERE..."></textarea>
+                    <div class="flex justify-between items-start gap-4">
+                      <h2 class="font-headline-lg uppercase text-[20px] md:text-[24px] leading-tight text-ink">
+                        DESCRIBE THE BIGGEST CHALLENGE YOU OVERCAME.
+                      </h2>
+                      <div id="combo-badge-challenge" class="combo-badge-display shrink-0">
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+                        <span id="combo-text-challenge">YAP COMBO x1</span>
+                      </div>
+                    </div>
+                    <textarea id="manual-challenge"
+                      class="w-full bg-surface brutal-border p-4 font-body-md uppercase text-ink focus:outline-none focus:bg-surface-dim transition-colors min-h-[120px] shadow-inner"
+                      placeholder="TYPE YOUR YAP HERE..."></textarea>
                   </div>
                 </div>
               </div>
@@ -477,18 +609,24 @@
               <div class="flex flex-col gap-6 pt-4 border-t-4 border-dashed border-outline-variant">
                 <!-- Vibe check chips -->
                 <div class="space-y-3">
-                  <label class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Vibe Check</label>
+                  <label
+                    class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Vibe
+                    Check</label>
                   <div class="flex flex-wrap gap-4">
-                    <button id="vibe-btn-professional" class="bg-success text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip active">
+                    <button id="vibe-btn-professional"
+                      class="bg-success text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip active">
                       Professional
                     </button>
-                    <button id="vibe-btn-chaotic" class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
+                    <button id="vibe-btn-chaotic"
+                      class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
                       Chaotic
                     </button>
-                    <button id="vibe-btn-minimalist" class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
+                    <button id="vibe-btn-minimalist"
+                      class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
                       Minimalist
                     </button>
-                    <button id="vibe-btn-hacker" class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
+                    <button id="vibe-btn-hacker"
+                      class="bg-surface text-ink border-4 border-ink py-2 px-6 font-display-sm text-[18px] uppercase brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all vibe-chip hover:bg-secondary-container hover:text-on-secondary">
                       Hacker
                     </button>
                   </div>
@@ -497,11 +635,16 @@
                 <!-- Yapping length slider -->
                 <div class="space-y-4 pt-2">
                   <div class="flex justify-between items-center">
-                    <label class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Yapping Length</label>
-                    <span id="slider-label" class="font-label-md text-label-md text-secondary uppercase border-2 border-secondary px-2 bg-surface">Volume: 75%</span>
+                    <label
+                      class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm">Yapping
+                      Length</label>
+                    <span id="slider-label"
+                      class="font-label-md text-label-md text-secondary uppercase border-2 border-secondary px-2 bg-surface">Volume:
+                      75%</span>
                   </div>
                   <div class="px-2 pb-2">
-                    <input id="slider-yap-length" class="w-full appearance-none bg-transparent cursor-pointer" max="100" min="1" type="range" value="75"/>
+                    <input id="slider-yap-length" class="w-full appearance-none bg-transparent cursor-pointer" max="100"
+                      min="1" type="range" value="75" />
                   </div>
                   <div class="flex justify-between font-label-sm text-label-sm uppercase text-on-surface-variant">
                     <span>To the Point</span>
@@ -513,9 +656,11 @@
             </div>
 
             <!-- Transform CTA Button -->
-            <button id="btn-transform-generate" class="w-full bg-electric-blue text-white font-display-md py-8 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all mt-4 text-[36px] leading-none text-center flex justify-center items-center group">
+            <button id="btn-transform-generate"
+              class="w-full bg-electric-blue text-white font-display-md py-8 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all mt-4 text-[36px] leading-none text-center flex justify-center items-center group">
               TRANSFORM TO PORTFOLIO!
-              <span class="material-symbols-outlined ml-4 text-[42px] group-hover:translate-x-2 transition-transform">rocket_launch</span>
+              <span
+                class="material-symbols-outlined ml-4 text-[42px] group-hover:translate-x-2 transition-transform">rocket_launch</span>
             </button>
           </div>
         </div>
@@ -538,35 +683,43 @@
           </div>
         </div>
 
-          </div>
-        </div>
-
       </div>
     </div>
+
+  </div>
+  </div>
   </div>
 
   <!-- ==========================================
        STATE 4: GENERATION RESULT VIEW (DEDICATED PAGE)
        ========================================== -->
-  <div id="state-result" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden bg-primary-container" style="display:none;">
+  <div id="state-result" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden bg-primary-container"
+    style="display:none;">
     <!-- TopNavBar -->
-    <header class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+    <header
+      class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
       <div class="flex items-center gap-4">
-        <div id="btn-logo-result" class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">YAP!</div>
+        <div id="btn-logo-result"
+          class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">
+          YAP!</div>
       </div>
       <div class="flex items-center gap-4">
-        <span id="result-dev-title" class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">YAP COMPLETE! 🎉</span>
+        <span id="result-dev-title"
+          class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">YAP
+          COMPLETE! 🎉</span>
       </div>
     </header>
 
     <div class="w-full min-h-[calc(100vh-100px)] p-margin-mobile md:p-gutter flex flex-col justify-start items-center">
       <div class="w-full max-w-5xl mx-auto flex flex-col gap-gutter mt-4">
-        
+
         <!-- Header title -->
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
           <div>
-            <h1 class="font-display-md-mobile md:font-display-md text-display-md-mobile md:text-display-md text-ink">GENERATION RESULT</h1>
-            <p class="font-body-md text-body-md mt-2 max-w-2xl text-ink/80">Review your AI-generated assets. Edit directly or export to your linked repositories.</p>
+            <h1 class="font-display-md-mobile md:font-display-md text-display-md-mobile md:text-display-md text-ink">
+              GENERATION RESULT</h1>
+            <p class="font-body-md text-body-md mt-2 max-w-2xl text-ink/80">Review your AI-generated assets. Edit
+              directly or export to your linked repositories.</p>
           </div>
         </div>
 
@@ -575,18 +728,20 @@
           <!-- Tab Headers -->
           <div class="flex gap-2 relative z-10 -mb-[4px] pl-4">
             <!-- README Tab -->
-            <button id="btn-result-tab-readme" class="bg-secondary text-surface border-4 border-ink border-b-0 px-6 py-3 pb-4 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 transform translate-y-[4px] active-result-tab">
+            <button id="btn-result-tab-readme"
+              class="bg-secondary text-surface border-4 border-ink border-b-0 px-6 py-3 pb-4 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 transform translate-y-[4px] active-result-tab">
               <span class="text-xl">🐙</span> GITHUB README.md
             </button>
             <!-- LinkedIn Tab -->
-            <button id="btn-result-tab-linkedin" class="bg-surface text-ink border-4 border-ink border-b-0 px-6 py-3 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 hover:bg-primary-container transition-colors shadow-[4px_0px_0px_0px_rgba(0,0,0,1)]">
+            <button id="btn-result-tab-linkedin"
+              class="bg-surface text-ink border-4 border-ink border-b-0 px-6 py-3 rounded-t-xl font-label-md text-label-md uppercase flex items-center gap-2 hover:bg-primary-container transition-colors shadow-[4px_0px_0px_0px_rgba(0,0,0,1)]">
               <span class="text-xl">💼</span> LINKEDIN POST
             </button>
           </div>
-          
+
           <!-- Main Content Panel -->
           <div class="bg-surface border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6 md:p-12 relative z-20">
-            
+
             <!-- Tab Panel Content README -->
             <div id="result-panel-readme" class="result-content-panel active">
               <div id="readme-preview-content" class="w-full flex flex-col gap-4 font-mono text-ink">
@@ -605,11 +760,13 @@
 
             <!-- Action Bar -->
             <div class="flex flex-col sm:flex-row gap-4 mt-12 pt-8 border-t-4 border-ink border-dashed">
-              <button id="btn-copy-result" class="flex-1 bg-secondary text-surface font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-6 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
+              <button id="btn-copy-result"
+                class="flex-1 bg-secondary text-surface font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-6 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">content_copy</span>
                 COPY TO CLIPBOARD
               </button>
-              <button id="btn-reset-generator" class="sm:w-auto bg-surface text-ink font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-8 hover:bg-primary-container hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
+              <button id="btn-reset-generator"
+                class="sm:w-auto bg-surface text-ink font-headline-lg text-headline-lg uppercase border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] py-4 px-8 hover:bg-primary-container hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] active:translate-y-2 active:translate-x-2 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex items-center justify-center gap-3">
                 <span class="material-symbols-outlined">refresh</span>
                 RE-YAP
               </button>
@@ -619,33 +776,42 @@
         </div>
       </div>
 
-      </div>
     </div>
+  </div>
   </div>
 
   <!-- ==========================================
        STATE 2: DIAGNOSTIC WIZARD (DEDICATED PAGE)
        ========================================== -->
-  <div id="state-wizard" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden bg-primary-container" style="display:none;">
+  <div id="state-wizard" class="state-view min-h-screen text-ink font-body-md overflow-x-hidden bg-primary-container"
+    style="display:none;">
     <!-- TopNavBar -->
-    <header class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+    <header
+      class="w-full top-0 sticky z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 bg-background border-b-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
       <div class="flex items-center gap-4">
-        <div id="btn-logo-wizard" class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">YAP!</div>
+        <div id="btn-logo-wizard"
+          class="font-display-sm text-display-sm font-black tracking-tighter text-ink brutal-shadow-hover transition-transform cursor-pointer active:translate-x-[2px] active:translate-y-[2px]">
+          YAP!</div>
       </div>
       <div class="flex items-center gap-4">
-        <span id="wizard-dev-title" class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">DIAGNOSTIC WIZARD 🧙‍♂️</span>
+        <span id="wizard-dev-title"
+          class="bg-success text-ink border-4 border-ink px-4 py-2 font-label-md text-label-md uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] block">DIAGNOSTIC
+          WIZARD 🧙‍♂️</span>
       </div>
     </header>
 
     <div class="w-full min-h-[calc(100vh-100px)] p-margin-mobile md:p-gutter flex flex-col justify-center items-center">
-      <div class="w-full max-w-4xl bg-surface border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 md:p-12 relative flex flex-col gap-6">
-        
+      <div
+        class="w-full max-w-4xl bg-surface border-4 border-ink shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8 md:p-12 relative flex flex-col gap-6">
+
         <!-- Controls Header -->
         <div class="flex justify-between items-center w-full">
-          <button id="btn-wizard-back" class="bg-surface border-4 border-ink px-4 py-2 font-label-sm text-label-sm uppercase text-ink brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
+          <button id="btn-wizard-back"
+            class="bg-surface border-4 border-ink px-4 py-2 font-label-sm text-label-sm uppercase text-ink brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">arrow_back</span> UNDO PREVIOUS
           </button>
-          <button id="btn-wizard-exit" class="bg-hot-pink text-white border-4 border-ink px-4 py-2 font-label-sm text-label-sm uppercase brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
+          <button id="btn-wizard-exit"
+            class="bg-hot-pink text-white border-4 border-ink px-4 py-2 font-label-sm text-label-sm uppercase brutal-shadow-sm brutal-shadow-hover brutal-shadow-active transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">close</span> EXIT WIZARD
           </button>
         </div>
@@ -653,12 +819,15 @@
         <!-- Question View -->
         <div id="wizard-question-view" class="flex flex-col gap-6">
           <!-- Phase Badge -->
-          <div class="inline-flex self-start border-4 border-ink bg-surface-variant px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <span id="wizard-step-phase" class="font-label-md text-label-md uppercase text-ink font-bold">MAIN GATE</span>
+          <div
+            class="inline-flex self-start border-4 border-ink bg-surface-variant px-4 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <span id="wizard-step-phase" class="font-label-md text-label-md uppercase text-ink font-bold">MAIN
+              GATE</span>
           </div>
 
           <!-- Question Text -->
-          <h1 id="wizard-step-question" class="font-bold text-2xl md:text-3xl font-body-lg text-ink leading-tight tracking-tight">
+          <h1 id="wizard-step-question"
+            class="font-bold text-2xl md:text-3xl font-body-lg text-ink leading-tight tracking-tight">
             What cursed thing did you actually build?
           </h1>
 
@@ -670,27 +839,36 @@
 
         <!-- Dramatic Terminal Node view (hidden by default) -->
         <div id="wizard-terminal-view" class="hidden flex-col items-center text-center gap-6 py-6">
-          <div class="w-20 h-20 bg-success border-4 border-ink flex items-center justify-center rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-bounce">
+          <div
+            class="w-20 h-20 bg-success border-4 border-ink flex items-center justify-center rounded-full shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-bounce">
             <span class="material-symbols-outlined text-5xl text-ink">check_circle</span>
           </div>
-          <h2 class="font-bold text-2xl md:text-3xl text-ink uppercase" id="wizard-terminal-title">THE BACKEND BEAST 🔌</h2>
+          <h2 class="font-bold text-2xl md:text-3xl text-ink uppercase" id="wizard-terminal-title">THE BACKEND BEAST 🔌
+          </h2>
           <p class="font-body-md text-body-md max-w-2xl text-ink/80" id="wizard-terminal-message">
             Backend fully interrogated...
           </p>
 
           <!-- Project Naming input row -->
-          <div class="w-full max-w-lg mt-4 flex flex-col gap-4 border-4 border-ink p-6 bg-background brutal-shadow-sm text-left">
-            <label class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm self-start">Project Name</label>
+          <div
+            class="w-full max-w-lg mt-4 flex flex-col gap-4 border-4 border-ink p-6 bg-background brutal-shadow-sm text-left">
+            <label
+              class="block font-label-md text-label-md uppercase bg-primary-container inline-block px-2 border-2 border-ink brutal-shadow-sm self-start">Project
+              Name</label>
             <div class="flex flex-col sm:flex-row gap-4 items-stretch">
-              <input id="wizard-project-name" class="flex-1 bg-surface border-4 border-ink p-3 font-body-md text-body-md text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors" placeholder="ENTER PROJECT NAME..." type="text"/>
-              <button id="btn-wizard-surrender-name" class="bg-surface-variant text-ink font-label-md uppercase border-4 border-ink px-4 py-2 hover:bg-surface-dim transition-colors brutal-shadow-sm active:translate-x-[2px] active:translate-y-[2px]">
+              <input id="wizard-project-name"
+                class="flex-1 bg-surface border-4 border-ink p-3 font-body-md text-body-md text-ink placeholder:text-on-surface-variant focus:outline-none brutal-inset-shadow uppercase transition-colors"
+                placeholder="ENTER PROJECT NAME..." type="text" />
+              <button id="btn-wizard-surrender-name"
+                class="bg-surface-variant text-ink font-label-md uppercase border-4 border-ink px-4 py-2 hover:bg-surface-dim transition-colors brutal-shadow-sm active:translate-x-[2px] active:translate-y-[2px]">
                 🎲 SURRENDER TO AI
               </button>
             </div>
           </div>
 
           <!-- Main Submit Button -->
-          <button id="btn-wizard-submit-generate" class="w-full max-w-lg bg-electric-blue text-white font-headline-lg py-5 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all mt-4 text-center flex justify-center items-center group">
+          <button id="btn-wizard-submit-generate"
+            class="w-full max-w-lg bg-electric-blue text-white font-headline-lg py-5 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all mt-4 text-center flex justify-center items-center group">
             GENERATE MY README & POST 🚀
           </button>
         </div>
@@ -699,6 +877,84 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       RETRO TUTORIAL OVERLAY MODAL
+       ========================================== -->
+  <div id="app-onboarding-tutorial" class="fixed inset-0 z-[10000] bg-ink/75 flex items-center justify-center p-4"
+    style="display:none;">
+    <div
+      class="bg-surface brutal-border w-full max-w-3xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8 flex flex-col gap-6 select-none relative animate-[banner-slide-down_0.3s_ease] rounded-none">
+      <!-- Header -->
+      <div class="bg-volt-yellow brutal-border p-4 -mx-8 -mt-8 flex justify-between items-center rounded-none">
+        <h2 class="font-display-sm text-display-sm uppercase tracking-tight text-ink flex items-center gap-2">
+          <span class="material-symbols-outlined text-4xl animate-bounce">rocket_launch</span>
+          HOW TO YAP LIKE A PRO
+        </h2>
+      </div>
+
+      <!-- Intro -->
+      <p
+        class="font-body-md text-body-md font-semibold text-ink/80 border-b-4 border-dashed border-outline-variant pb-4">
+        Welcome to <strong class="text-electric-blue">YAP!</strong> We turn your raw, chaotic thoughts or source code
+        into polished portfolio gold. Choose your weapon:
+      </p>
+
+      <!-- Three Paths -->
+      <div class="flex flex-col gap-4">
+        <!-- Path 1 -->
+        <div
+          class="brutal-border p-4 bg-secondary-fixed brutal-shadow-sm flex items-start gap-4 hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all rounded-none">
+          <div
+            class="bg-electric-blue text-white w-10 h-10 flex items-center justify-center font-bold text-lg brutal-border shrink-0 rounded-none">
+            1</div>
+          <div>
+            <h4 class="font-headline-lg text-lg uppercase text-ink">PATH 1: PASTE REPO LINK</h4>
+            <p class="font-body-md text-sm text-ink/80">
+              For public repositories. Enter your public GitHub repo URL and let our parser pull your files
+              automatically.
+            </p>
+          </div>
+        </div>
+
+        <!-- Path 2 -->
+        <div
+          class="brutal-border p-4 bg-surface-container-low brutal-shadow-sm flex items-start gap-4 hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all rounded-none">
+          <div
+            class="bg-hot-pink text-white w-10 h-10 flex items-center justify-center font-bold text-lg brutal-border shrink-0 rounded-none">
+            2</div>
+          <div>
+            <h4 class="font-headline-lg text-lg uppercase text-ink">PATH 2: MANUAL INDUSTRIAL YAP</h4>
+            <p class="font-body-md text-sm text-ink/80">
+              For private or local projects. Type out details manually across the structured text areas below.
+            </p>
+          </div>
+        </div>
+
+        <!-- Path 3 -->
+        <div
+          class="brutal-border p-4 bg-primary-container brutal-shadow-sm flex items-start gap-4 hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all rounded-none">
+          <div
+            class="bg-ink text-volt-yellow w-10 h-10 flex items-center justify-center font-bold text-lg brutal-border shrink-0 rounded-none">
+            3</div>
+          <div>
+            <h4 class="font-headline-lg text-lg uppercase text-ink">PATH 3: AKINATOR MODE</h4>
+            <p class="font-body-md text-sm text-ink/80">
+              Confused what to yap? Click the green <strong>"HELP! (CONFUSED WHAT TO YAP?)"</strong> button to start a
+              fun, branching diagnostic questionnaire!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button id="btn-close-tutorial"
+        class="bg-volt-yellow text-ink font-display-sm text-xl py-4 px-6 uppercase brutal-border brutal-shadow brutal-shadow-hover brutal-shadow-active transition-all text-center flex justify-center items-center gap-3 rounded-none">
+        GOT IT, LET ME YAP! 🚀
+      </button>
+    </div>
+  </div>
+
   <script src="/static/app.js"></script>
 </body>
+
 </html>
