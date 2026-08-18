@@ -79,16 +79,23 @@ TOTAL_FETCH_TIMEOUT = 25  # seconds total HTTP timeout for fetch process
 
 def parse_github_url(url: str) -> tuple[str, str] | None:
     """Extract (owner, repo) from a GitHub URL. Returns None on failure."""
-    url = url.strip().rstrip("/")
-    # Normalise: https://github.com/owner/repo[/anything]
-    patterns = [
-        r"github\.com[/:]([^/]+)/([^/.\s]+)",
-    ]
-    for pat in patterns:
-        m = re.search(pat, url)
-        if m:
-            return m.group(1), m.group(2).removesuffix(".git")
+    if not url:
+        return None
+
+    # Strip query strings and fragments
+    clean_url = url.split("?")[0].split("#")[0].strip().rstrip("/")
+
+    # Match github.com/owner/repo or github.com:owner/repo
+    pattern = r"github\.com[/:]([^/\s]+)/([^/\s]+)"
+    m = re.search(pattern, clean_url)
+    if m:
+        owner = m.group(1)
+        repo = m.group(2).removesuffix(".git")
+        if owner and repo:
+            return owner, repo
+
     return None
+
 
 
 def is_allowed_file(path: str) -> bool:
