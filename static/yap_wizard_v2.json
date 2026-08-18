@@ -645,7 +645,7 @@
       "question": "LLM-powered app. Which API is your app actually built on?",
       "options": [
         { "label": "🟢  OpenAI (GPT-4o, GPT-4, etc.)", "value": "openai", "next": "C4_llm_stack", "collects": { "llm_provider": "OpenAI API (GPT-4o / GPT-4)" } },
-        { "label": "💎  Google Gemini (Gemini 2.5, etc.)", "value": "gemini", "next": "C4_llm_stack", "collects": { "llm_provider": "Google Gemini API" } },
+        { "label": "💎  Google Gemini (Gemini 3.6, etc.)", "value": "gemini", "next": "C4_llm_stack", "collects": { "llm_provider": "Google Gemini API" } },
         { "label": "🟠  Anthropic Claude", "value": "claude", "next": "C4_llm_stack", "collects": { "llm_provider": "Anthropic Claude API" } },
         { "label": "🦙  Open-source model — Llama, Mistral, Qwen, run locally or self-hosted", "value": "oss_model", "next": "C4_llm_stack", "collects": { "llm_provider": "Open-Source LLM (Llama / Mistral / Qwen)" } }
       ]
