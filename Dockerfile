@@ -17,7 +17,8 @@ ENV PORT=8080
 CMD exec gunicorn --bind :$PORT \
     --workers 1 \
     --threads 8 \
-    --timeout 120 \
+    --timeout 300 \
     --access-logfile - \
     --error-logfile - \
     app:app
+

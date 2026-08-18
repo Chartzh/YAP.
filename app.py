@@ -6,10 +6,13 @@ Flask backend: GitHub repo filtering + Gemini AI generation
 import os
 import re
 import json
+import io
+import tarfile
 import base64
 import logging
 import time
 from urllib.parse import urlparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from flask import Flask, render_template, request, jsonify
@@ -67,6 +70,9 @@ PRIORITY_FILES = [
 ]
 
 MAX_PAYLOAD_CHARS = 30_000
+MAX_FILES_LIMIT = 50
+MAX_TARBALL_BYTES = 40 * 1024 * 1024  # 40 MB max tarball size
+TOTAL_FETCH_TIMEOUT = 25  # seconds total HTTP timeout for fetch process
 
 
 # ─── Utility ─────────────────────────────────────────────────────────────────
@@ -115,74 +121,202 @@ def github_headers() -> dict:
 def fetch_github_repo(owner: str, repo: str) -> dict:
     """
     Fetch filtered repository content from GitHub REST API.
-    Returns {"content": str, "files_read": list, "truncated": bool}
+    Uses tarball download as primary strategy (fast path), falling back to
+    parallelized REST API tree calls via ThreadPoolExecutor.
+    Returns {"content": str, "files_read": list, "truncated": bool, "repo_name": str, "owner": str}
     """
-    base = f"https://api.github.com/repos/{owner}/{repo}"
+    start_time = time.time()
+    base_url = f"https://api.github.com/repos/{owner}/{repo}"
+
+    def remaining_timeout(default_cap: float = 10.0) -> float:
+        elapsed = time.time() - start_time
+        left = TOTAL_FETCH_TIMEOUT - elapsed
+        if left <= 0:
+            return 0.1
+        return min(default_cap, left)
 
     # 1. Get the default branch
-    repo_resp = requests.get(base, headers=github_headers(), timeout=10)
+    repo_resp = requests.get(base_url, headers=github_headers(), timeout=remaining_timeout(10.0))
     if repo_resp.status_code == 404:
         raise ValueError(f"Repository {owner}/{repo} not found or is private.")
     repo_resp.raise_for_status()
     repo_data = repo_resp.json()
     default_branch = repo_data.get("default_branch", "main")
 
-    # 2. Get the full file tree (recursive)
-    tree_resp = requests.get(
-        f"{base}/git/trees/{default_branch}?recursive=1",
-        headers=github_headers(),
-        timeout=15,
-    )
-    tree_resp.raise_for_status()
-    tree = tree_resp.json().get("tree", [])
-
-    # 3. Filter to allowed blobs only
-    blobs = [
-        item for item in tree
-        if item.get("type") == "blob" and is_allowed_file(item["path"])
-    ]
-
-    # 4. Sort: priority files first, then by size ascending (grab smaller files more easily)
-    def sort_key(item):
-        name = os.path.basename(item["path"])
+    # Helper for sorting blobs/members
+    def sort_key(item_path_and_size: tuple[str, int]):
+        path, size = item_path_and_size
+        name = os.path.basename(path)
         try:
             priority_idx = PRIORITY_FILES.index(name)
         except ValueError:
             priority_idx = len(PRIORITY_FILES)
-        return (priority_idx, item.get("size", 9999999))
+        return (priority_idx, size)
 
-    blobs.sort(key=sort_key)
+    # Try Primary Approach: Tarball Download & In-Memory Extraction
+    try:
+        if time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
+            raise TimeoutError("Fetch timeout before starting tarball download.")
 
-    # 5. Fetch file contents until char limit
-    collected: list[str] = []
-    files_read: list[str] = []
+        tar_url = f"https://api.github.com/repos/{owner}/{repo}/tarball/{default_branch}"
+        with requests.get(
+            tar_url,
+            headers=github_headers(),
+            timeout=remaining_timeout(20.0),
+            stream=True,
+        ) as tar_resp:
+            if tar_resp.status_code == 404:
+                raise ValueError(f"Repository {owner}/{repo} not found or is private.")
+            tar_resp.raise_for_status()
+
+            bio = io.BytesIO()
+            downloaded = 0
+            for chunk in tar_resp.iter_content(chunk_size=65536):
+                if time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
+                    raise TimeoutError("Tarball download exceeded timeout budget.")
+                if chunk:
+                    downloaded += len(chunk)
+                    if downloaded > MAX_TARBALL_BYTES:
+                        raise ValueError(f"Tarball exceeded maximum allowed size of {MAX_TARBALL_BYTES} bytes.")
+                    bio.write(chunk)
+
+            bio.seek(0)
+            with tarfile.open(fileobj=bio, mode="r:gz") as tar:
+                candidates = []
+                for member in tar.getmembers():
+                    if not member.isfile():
+                        continue
+                    # GitHub tarball root directory name is {owner}-{repo}-{sha}/
+                    parts = member.name.split("/")
+                    if len(parts) <= 1:
+                        continue
+                    rel_path = "/".join(parts[1:])
+                    if not rel_path or not is_allowed_file(rel_path):
+                        continue
+                    candidates.append((rel_path, member))
+
+                # Sort by priority index, then file size ascending
+                candidates.sort(key=lambda x: sort_key((x[0], x[1].size)))
+
+                # Cap max files to 50
+                candidates = candidates[:MAX_FILES_LIMIT]
+
+                collected = []
+                files_read = []
+                total_chars = 0
+                truncated = False
+
+                for rel_path, member in candidates:
+                    if total_chars >= MAX_PAYLOAD_CHARS or time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
+                        truncated = True
+                        break
+
+                    f = tar.extractfile(member)
+                    if f is None:
+                        continue
+                    raw_content = f.read()
+                    text = raw_content.decode("utf-8", errors="replace")
+
+                    remaining = MAX_PAYLOAD_CHARS - total_chars
+                    if len(text) > remaining:
+                        text = text[:remaining]
+                        truncated = True
+
+                    block = f"### FILE: {rel_path}\n```\n{text}\n```\n\n"
+                    collected.append(block)
+                    files_read.append(rel_path)
+                    total_chars += len(text)
+
+                return {
+                    "content": "".join(collected),
+                    "files_read": files_read,
+                    "truncated": truncated,
+                    "repo_name": repo,
+                    "owner": owner,
+                }
+
+    except ValueError as ve:
+        if "not found or is private" in str(ve):
+            raise ve
+        logger.warning(f"Tarball approach failed, falling back to parallelized API tree fetch: {ve}")
+    except Exception as e:
+        logger.warning(f"Tarball approach failed, falling back to parallelized API tree fetch: {e}")
+
+    # Fallback Strategy: REST API recursive tree fetch + ThreadPoolExecutor
+    if time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
+        return {
+            "content": "",
+            "files_read": [],
+            "truncated": True,
+            "repo_name": repo,
+            "owner": owner,
+        }
+
+    tree_resp = requests.get(
+        f"{base_url}/git/trees/{default_branch}?recursive=1",
+        headers=github_headers(),
+        timeout=remaining_timeout(10.0),
+    )
+    if tree_resp.status_code == 404:
+        raise ValueError(f"Repository {owner}/{repo} not found or is private.")
+    tree_resp.raise_for_status()
+    tree = tree_resp.json().get("tree", [])
+
+    blobs = [
+        item for item in tree
+        if item.get("type") == "blob" and is_allowed_file(item["path"])
+    ]
+    blobs.sort(key=lambda b: sort_key((b["path"], b.get("size", 9999999))))
+    blobs = blobs[:MAX_FILES_LIMIT]
+
+    def fetch_blob_content(blob: dict) -> tuple[str, str | None]:
+        path = blob["path"]
+        if time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
+            return path, None
+        try:
+            file_resp = requests.get(
+                f"{base_url}/contents/{path}?ref={default_branch}",
+                headers=github_headers(),
+                timeout=remaining_timeout(10.0),
+            )
+            if file_resp.status_code != 200:
+                return path, None
+            file_data = file_resp.json()
+            encoding = file_data.get("encoding", "")
+            raw_content = file_data.get("content", "")
+
+            if encoding == "base64":
+                text = base64.b64decode(raw_content).decode("utf-8", errors="replace")
+            else:
+                text = raw_content
+            return path, text
+        except Exception:
+            return path, None
+
+    # Fetch in parallel with max 10 workers
+    blob_map = {}
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        futures = {executor.submit(fetch_blob_content, blob): blob["path"] for blob in blobs}
+        for future in as_completed(futures):
+            path, text = future.result()
+            if text is not None:
+                blob_map[path] = text
+
+    # Process blobs in original sorted order
+    collected = []
+    files_read = []
     total_chars = 0
     truncated = False
 
     for blob in blobs:
-        if total_chars >= MAX_PAYLOAD_CHARS:
+        path = blob["path"]
+        if path not in blob_map:
+            continue
+        if total_chars >= MAX_PAYLOAD_CHARS or time.time() - start_time >= TOTAL_FETCH_TIMEOUT:
             truncated = True
             break
-        path = blob["path"]
-        file_resp = requests.get(
-            f"{base}/contents/{path}?ref={default_branch}",
-            headers=github_headers(),
-            timeout=10,
-        )
-        if file_resp.status_code != 200:
-            continue
-        file_data = file_resp.json()
-        encoding = file_data.get("encoding", "")
-        raw_content = file_data.get("content", "")
 
-        if encoding == "base64":
-            try:
-                text = base64.b64decode(raw_content).decode("utf-8", errors="replace")
-            except Exception:
-                continue
-        else:
-            text = raw_content
-
+        text = blob_map[path]
         remaining = MAX_PAYLOAD_CHARS - total_chars
         if len(text) > remaining:
             text = text[:remaining]
@@ -303,6 +437,7 @@ def call_gemini(prompt: str) -> dict:
                     system_instruction=SYSTEM_PROMPT,
                     temperature=0.85,
                     max_output_tokens=4096,
+                    response_mime_type="application/json",
                 ),
             )
 
@@ -370,8 +505,11 @@ def api_fetch_github():
         if status == 403:
             return jsonify({"error": "GitHub rate limit exceeded. Add a GITHUB_TOKEN env var to increase limits."}), 429
         return jsonify({"error": f"GitHub API error: {status}"}), status
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "Request to GitHub timed out. Please try again."}), 504
     except requests.exceptions.ConnectionError:
         return jsonify({"error": "Cannot reach GitHub. Check your internet connection."}), 503
+
     except Exception as e:
         logger.exception("Unexpected error fetching GitHub repo")
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
@@ -420,7 +558,13 @@ def api_generate():
 
 @app.route("/healthz")
 def healthz():
-    return jsonify({"status": "ok", "service": "YAP!"})
+    is_configured = bool(GEMINI_API_KEY.strip())
+    return jsonify({
+        "status": "ok",
+        "service": "YAP!",
+        "gemini_configured": is_configured
+    })
+
 
 
 @app.route("/favicon.ico")
