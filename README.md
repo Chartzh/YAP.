@@ -2,8 +2,6 @@
 
 > **Transform raw code repositories into enterprise-grade READMEs and high-converting executive social proof in seconds.**
 
-![YAP! Banner](https://via.placeholder.com/1200x400/EBFF00/000000?text=YAP!+%E2%80%94+AI+Portfolio+Content+Engine)
-
 ## 💡 Why This Exists
 
 Top 1% engineers often suffer from mediocre personal positioning. Writing high-impact READMEs and technical posts takes valuable focus away from shipping code. **YAP!** bridges this gap by directly ingesting GitHub repositories, extracting core architectural context, and generating production-ready documentation and LinkedIn content tuned to distinct tone profiles.
@@ -64,15 +62,3 @@ Top 1% engineers often suffer from mediocre personal positioning. Writing high-i
 docker build -t yap-app .
 docker run -p 8080:8080 -e GEMINI_API_KEY=your_key_here yap-app
 ```
-
----
-
-## 📸 Demo & Screenshots
-
-![Dashboard Demo](https://via.placeholder.com/800x450/000000/EBFF00?text=YAP!+Dashboard+Interface)
-
----
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for details.
